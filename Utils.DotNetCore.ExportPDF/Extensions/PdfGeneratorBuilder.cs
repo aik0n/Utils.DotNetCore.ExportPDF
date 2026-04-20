@@ -1,50 +1,55 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+using Razor.Templating.Core;
 
 namespace Utils.DotNetCore.ExportPDF
 {
-    public sealed class PdfGeneratorBuilder
+    public sealed class PdfGeneratorRendererBuilder
     {
         private readonly IServiceCollection _services;
 
-        internal PdfGeneratorBuilder(IServiceCollection services)
+        internal PdfGeneratorRendererBuilder(IServiceCollection services)
         {
             _services = services ?? throw new ArgumentNullException(nameof(services));
         }
 
-        public PdfGeneratorBuilder WithDefaultContentRenderer()
+        public PdfGeneratorExporterBuilder WithDefaultContentRenderer()
         {
-            _services.AddRazorTemplating();
             _services.TryAddScoped<IHtmlContentRenderer, HtmlContentRenderer>();
-            return this;
+            return new PdfGeneratorExporterBuilder(_services);
         }
 
-        public PdfGeneratorBuilder WithCustomContentRenderer<TRenderer>() where TRenderer : class, IHtmlContentRenderer
+        public PdfGeneratorExporterBuilder WithCustomContentRenderer<TRenderer>() where TRenderer : class, IHtmlContentRenderer
         {
             _services.TryAddScoped<IHtmlContentRenderer, TRenderer>();
-            return this;
+            return new PdfGeneratorExporterBuilder(_services);
+        }
+    }
+
+    public sealed class PdfGeneratorExporterBuilder
+    {
+        private readonly IServiceCollection _services;
+
+        internal PdfGeneratorExporterBuilder(IServiceCollection services)
+        {
+            _services = services ?? throw new ArgumentNullException(nameof(services));
         }
 
-        public PdfGeneratorBuilder WithPuppeteerExporter()
+        public IServiceCollection WithPuppeteerExporter()
         {
             _services.TryAddSingleton<IHtmlPdfExporter, PuppeteerSharpPdfExporter>();
-            return this;
+            return _services;
         }
 
-        public PdfGeneratorBuilder WithPlaywrightExporter()
+        public IServiceCollection WithPlaywrightExporter()
         {
             _services.TryAddSingleton<IHtmlPdfExporter, PlaywrightPdfExporter>();
-            return this;
+            return _services;
         }
 
-        public PdfGeneratorBuilder WithCustomExporter<TExporter>() where TExporter : class, IHtmlPdfExporter
+        public IServiceCollection WithCustomExporter<TExporter>() where TExporter : class, IHtmlPdfExporter
         {
             _services.TryAddSingleton<IHtmlPdfExporter, TExporter>();
-            return this;
-        }
-
-        public IServiceCollection Build()
-        {
             return _services;
         }
     }

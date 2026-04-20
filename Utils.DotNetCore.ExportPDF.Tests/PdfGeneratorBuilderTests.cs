@@ -1,5 +1,6 @@
 using FluentAssertions;
 using Microsoft.Extensions.DependencyInjection;
+using Razor.Templating.Core;
 using Utils.DotNetCore.ExportPDF.Extensions;
 using Xunit;
 
@@ -27,13 +28,13 @@ public class PdfGeneratorBuilderTests
     }
 
     [Fact]
-    public void AddPdfGenerator_ReturnsBuilder()
+    public void AddPdfGenerator_ReturnsPdfGeneratorRendererBuilder()
     {
         var services = CreateServices();
 
         var result = services.AddPdfGenerator();
 
-        result.Should().BeOfType<PdfGeneratorBuilder>();
+        result.Should().BeOfType<PdfGeneratorRendererBuilder>();
     }
 
     [Fact]
@@ -56,7 +57,17 @@ public class PdfGeneratorBuilderTests
 
         services.AddPdfGenerator().WithDefaultContentRenderer();
 
-        services.Should().Contain(sd => sd.ServiceType.Name == "IRazorTemplateEngine");
+        services.Should().Contain(sd => sd.ServiceType.Name == nameof(IRazorTemplateEngine));
+    }
+
+    [Fact]
+    public void WithDefaultContentRenderer_ReturnsPdfGeneratorExporterBuilder()
+    {
+        var services = CreateServices();
+
+        var result = services.AddPdfGenerator().WithDefaultContentRenderer();
+
+        result.Should().BeOfType<PdfGeneratorExporterBuilder>();
     }
 
     [Fact]
@@ -73,11 +84,21 @@ public class PdfGeneratorBuilderTests
     }
 
     [Fact]
+    public void WithCustomContentRenderer_ReturnsPdfGeneratorExporterBuilder()
+    {
+        var services = CreateServices();
+
+        var result = services.AddPdfGenerator().WithCustomContentRenderer<FakeRenderer>();
+
+        result.Should().BeOfType<PdfGeneratorExporterBuilder>();
+    }
+
+    [Fact]
     public void WithPuppeteerExporter_RegistersAsSingleton()
     {
         var services = CreateServices();
 
-        services.AddPdfGenerator().WithPuppeteerExporter();
+        services.AddPdfGenerator().WithDefaultContentRenderer().WithPuppeteerExporter();
 
         services.Should().Contain(sd =>
             sd.ServiceType == typeof(IHtmlPdfExporter) &&
@@ -86,11 +107,21 @@ public class PdfGeneratorBuilderTests
     }
 
     [Fact]
+    public void WithPuppeteerExporter_ReturnsServiceCollection()
+    {
+        var services = CreateServices();
+
+        var result = services.AddPdfGenerator().WithDefaultContentRenderer().WithPuppeteerExporter();
+
+        result.Should().BeSameAs(services);
+    }
+
+    [Fact]
     public void WithPlaywrightExporter_RegistersAsSingleton()
     {
         var services = CreateServices();
 
-        services.AddPdfGenerator().WithPlaywrightExporter();
+        services.AddPdfGenerator().WithDefaultContentRenderer().WithPlaywrightExporter();
 
         services.Should().Contain(sd =>
             sd.ServiceType == typeof(IHtmlPdfExporter) &&
@@ -103,7 +134,7 @@ public class PdfGeneratorBuilderTests
     {
         var services = CreateServices();
 
-        services.AddPdfGenerator().WithCustomExporter<FakeExporter>();
+        services.AddPdfGenerator().WithDefaultContentRenderer().WithCustomExporter<FakeExporter>();
 
         services.Should().Contain(sd =>
             sd.ServiceType == typeof(IHtmlPdfExporter) &&
@@ -112,50 +143,31 @@ public class PdfGeneratorBuilderTests
     }
 
     [Fact]
-    public void WithDefaultContentRenderer_WhenCalledTwice_DoesNotDuplicateDescriptor()
-    {
-        var services = CreateServices();
-        var builder = services.AddPdfGenerator();
-
-        builder.WithDefaultContentRenderer().WithDefaultContentRenderer();
-
-        services.Count(sd => sd.ServiceType == typeof(IHtmlContentRenderer)).Should().Be(1);
-    }
-
-    [Fact]
-    public void WithPuppeteerExporter_WhenCalledTwice_DoesNotDuplicateDescriptor()
-    {
-        var services = CreateServices();
-        var builder = services.AddPdfGenerator();
-
-        builder.WithPuppeteerExporter().WithPuppeteerExporter();
-
-        services.Count(sd => sd.ServiceType == typeof(IHtmlPdfExporter)).Should().Be(1);
-    }
-
-    [Fact]
-    public void Chaining_AllMethods_DoesNotThrow()
+    public void Chaining_AllMethods_ReturnsServiceCollection()
     {
         var services = CreateServices();
 
-        var act = () => services
+        var result = services
             .AddPdfGenerator()
             .WithDefaultContentRenderer()
-            .WithPuppeteerExporter()
-            .Build();
+            .WithPuppeteerExporter();
 
-        act.Should().NotThrow();
+        result.Should().BeSameAs(services);
     }
 
     private sealed class FakeRenderer : IHtmlContentRenderer
     {
         public Task<string> RenderAsync<TModel>(string templateKey, TModel model) where TModel : class
-            => Task.FromResult(string.Empty);
+        {
+            return Task.FromResult(string.Empty);
+        }
     }
 
     private sealed class FakeExporter : IHtmlPdfExporter
     {
         public Task<byte[]> ExportAsync(string html, object options)
-            => Task.FromResult(Array.Empty<byte>());
+        {
+            return Task.FromResult(Array.Empty<byte>());
+        }
     }
 }
