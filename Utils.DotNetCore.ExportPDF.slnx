@@ -1,4 +1,5 @@
 <Solution>
   <Project Path="ExportPDF.WebSample/ExportPDF.WebSample.csproj" />
   <Project Path="Utils.DotNetCore.ExportPDF/Utils.DotNetCore.ExportPDF.csproj" />
+  <Project Path="Utils.DotNetCore.ExportPDF.Tests/Utils.DotNetCore.ExportPDF.Tests.csproj" />
 </Solution>

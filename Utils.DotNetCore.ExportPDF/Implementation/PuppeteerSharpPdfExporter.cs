@@ -41,15 +41,22 @@ public sealed class PuppeteerSharpPdfExporter : IHtmlPdfExporter, IAsyncDisposab
 
         if (options.GetType() != typeof(PdfOptions))
         {
-            throw new ArgumentException("Invalid options type", nameof(options));
+            throw new ArgumentException($"Options must be of type {nameof(PdfOptions)}.", nameof(options));
         }
 
         var browser = await _browserLazy.Value;
 
         await using var page = await browser.NewPageAsync();
-        await page.SetContentAsync(html);
 
-        return await page.PdfDataAsync((PdfOptions)options);
+        try
+        {
+            await page.SetContentAsync(html);
+            return await page.PdfDataAsync((PdfOptions)options);
+        }
+        finally
+        {
+            await page.CloseAsync();
+        }
     }
 
     public async ValueTask DisposeAsync()
