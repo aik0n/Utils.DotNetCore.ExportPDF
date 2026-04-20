@@ -1,4 +1,5 @@
 using Utils.DotNetCore.ExportPDF;
+using Utils.DotNetCore.ExportPDF.Extensions;
 
 namespace ExportPDF.WebSample
 {
@@ -9,12 +10,12 @@ namespace ExportPDF.WebSample
             var builder = WebApplication.CreateBuilder(args);
             builder.Services.AddEndpointsApiExplorer();
 
-            builder.Services.AddRazorTemplating();
             builder.Services.AddRazorPages();
 
-            builder.Services.AddScoped<IHtmlContentRenderer, HtmlContentRenderer>();
-            builder.Services.AddTransient<IHtmlPdfExporter, PuppeteerSharpPdfExporter>();
-            builder.Services.AddTransient<IPdfDocumentGenerator, PdfDocumentGenerator>();
+            builder.Services
+                .AddPdfGenerator()
+                .WithDefaultContentRenderer()
+                .WithPuppeteerExporter();
 
             var app = builder.Build();
 

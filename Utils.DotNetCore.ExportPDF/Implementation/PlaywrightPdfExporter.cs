@@ -14,13 +14,13 @@ public sealed class PlaywrightPdfExporter : IHtmlPdfExporter, IAsyncDisposable
         _browserLazy = new Lazy<Task<(IPlaywright, IBrowser)>>(InitAsync, LazyThreadSafetyMode.ExecutionAndPublication);
     }
 
-    //internal PlaywrightPdfExporter(Func<Task<(IPlaywright, IBrowser)>> factory)
-    //{
-    //    _playwrightPath = string.Empty;
-    //    _browserLazy = new Lazy<Task<(IPlaywright, IBrowser)>>(
-    //        factory,
-    //        LazyThreadSafetyMode.ExecutionAndPublication);
-    //}
+    internal PlaywrightPdfExporter(Func<Task<(IPlaywright, IBrowser)>> factory)
+    {
+        _playwrightPath = string.Empty;
+        _browserLazy = new Lazy<Task<(IPlaywright, IBrowser)>>(
+            factory,
+            LazyThreadSafetyMode.ExecutionAndPublication);
+    }
 
     private async Task<(IPlaywright, IBrowser)> InitAsync()
     {
