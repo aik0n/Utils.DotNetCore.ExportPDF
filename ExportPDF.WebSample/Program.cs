@@ -1,4 +1,4 @@
-using Utils.DotNetCore.ExportPDF.Extensions;
+using Utils.DotNetCore.ExportPDF;
 
 namespace ExportPDF.WebSample
 {

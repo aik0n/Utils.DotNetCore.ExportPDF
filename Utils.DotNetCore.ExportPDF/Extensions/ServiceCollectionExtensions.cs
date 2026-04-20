@@ -2,7 +2,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Razor.Templating.Core;
 
-namespace Utils.DotNetCore.ExportPDF.Extensions
+namespace Utils.DotNetCore.ExportPDF
 {
     public static class ServiceCollectionExtensions
     {

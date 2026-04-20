@@ -14,6 +14,12 @@ public sealed class PuppeteerSharpPdfExporter : IHtmlPdfExporter, IAsyncDisposab
         _browserLazy = new Lazy<Task<IBrowser>>(InitBrowserAsync, LazyThreadSafetyMode.ExecutionAndPublication);
     }
 
+    internal PuppeteerSharpPdfExporter(Func<Task<IBrowser>> browserFactory)
+    {
+        _chromiumPath = string.Empty;
+        _browserLazy = new Lazy<Task<IBrowser>>(browserFactory, LazyThreadSafetyMode.ExecutionAndPublication);
+    }
+
     private async Task<IBrowser> InitBrowserAsync()
     {
         var fetcher = new BrowserFetcher(new BrowserFetcherOptions { Path = _chromiumPath });

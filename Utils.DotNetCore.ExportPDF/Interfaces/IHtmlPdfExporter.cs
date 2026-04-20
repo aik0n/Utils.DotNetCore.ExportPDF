@@ -1,5 +1,3 @@
-using PuppeteerSharp;
-
 namespace Utils.DotNetCore.ExportPDF
 {
     /// <summary>
