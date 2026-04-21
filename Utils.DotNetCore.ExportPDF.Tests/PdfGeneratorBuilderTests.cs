@@ -1,3 +1,23 @@
+/*
+ * Test Matrix — PdfGeneratorBuilder (ServiceCollectionExtensions)
+ * ─────────────────────────────────────────────────────────────────────────────
+ *  #   Method                          State Under Test              Expected Behavior
+ * ─────────────────────────────────────────────────────────────────────────────
+ *  1   AddPdfGenerator                 called on ServiceCollection   registers IPdfDocumentGenerator as Scoped
+ *  2   AddPdfGenerator                 called on ServiceCollection   returns PdfGeneratorRendererBuilder
+ *  3   WithDefaultContentRenderer      called after AddPdfGenerator  registers IHtmlContentRenderer as Scoped
+ *  4   WithDefaultContentRenderer      called after AddPdfGenerator  registers IRazorTemplateEngine
+ *  5   WithDefaultContentRenderer      called after AddPdfGenerator  returns PdfGeneratorExporterBuilder
+ *  6   WithCustomContentRenderer<T>    called after AddPdfGenerator  registers custom IHtmlContentRenderer as Scoped
+ *  7   WithCustomContentRenderer<T>    called after AddPdfGenerator  returns PdfGeneratorExporterBuilder
+ *  8   WithPuppeteerExporter           called after renderer setup   registers IHtmlPdfExporter as Singleton
+ *  9   WithPuppeteerExporter           called after renderer setup   returns IServiceCollection
+ * 10   WithPlaywrightExporter          called after renderer setup   registers IHtmlPdfExporter as Singleton
+ * 11   WithCustomExporter<T>           called after renderer setup   registers custom IHtmlPdfExporter as Singleton
+ * 12   full chain                      all methods chained           returns IServiceCollection
+ * ─────────────────────────────────────────────────────────────────────────────
+ */
+
 using FluentAssertions;
 using Microsoft.Extensions.DependencyInjection;
 using Razor.Templating.Core;
