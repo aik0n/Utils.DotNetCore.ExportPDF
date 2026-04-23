@@ -1,0 +1,53 @@
+@{
+    ViewData["Title"] = "PDF Showcases";
+}
+
+<h1 class="mb-4">PDF Showcases</h1>
+<p class="text-muted mb-4">Explore the PDF export capabilities. Each showcase demonstrates a different document layout and feature set.</p>
+
+<div class="row row-cols-1 row-cols-md-2 g-4">
+    <div class="col">
+        <div class="card h-100">
+            <div class="card-body">
+                <h5 class="card-title">Invoice</h5>
+                <p class="card-text">A professional business invoice with line items, subtotals, tax calculation, and payment notes. Demonstrates table layouts and financial formatting.</p>
+            </div>
+            <div class="card-footer">
+                <a asp-controller="Documents" asp-action="InvoiceShow" class="btn btn-primary">View Showcase</a>
+            </div>
+        </div>
+    </div>
+    <div class="col">
+        <div class="card h-100">
+            <div class="card-body">
+                <h5 class="card-title">Layout Showcase</h5>
+                <p class="card-text">Demonstrates two-column layouts, CSS tab panels, rounded corners and borders, a fixed-position watermark, and a letterhead background image.</p>
+            </div>
+            <div class="card-footer">
+                <a asp-controller="Documents" asp-action="LayoutShowcaseShow" class="btn btn-primary">View Showcase</a>
+            </div>
+        </div>
+    </div>
+    <div class="col">
+        <div class="card h-100">
+            <div class="card-body">
+                <h5 class="card-title">Typography &amp; Fonts</h5>
+                <p class="card-text">Showcases custom fonts via <code>@@font-face</code>, Unicode and special characters, long text overflow handling, and <code>@@media print</code> CSS rules.</p>
+            </div>
+            <div class="card-footer">
+                <a asp-controller="Documents" asp-action="TypographyShow" class="btn btn-primary">View Showcase</a>
+            </div>
+        </div>
+    </div>
+    <div class="col">
+        <div class="card h-100">
+            <div class="card-body">
+                <h5 class="card-title">Partial Views &amp; Composition</h5>
+                <p class="card-text">Illustrates reusable header and footer components, conditional content blocks, multiple section types, and landscape page orientation.</p>
+            </div>
+            <div class="card-footer">
+                <a asp-controller="Documents" asp-action="PartialViewsShow" class="btn btn-primary">View Showcase</a>
+            </div>
+        </div>
+    </div>
+</div>

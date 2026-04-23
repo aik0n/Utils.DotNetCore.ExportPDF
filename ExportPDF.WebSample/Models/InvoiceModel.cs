@@ -1,9 +1,5 @@
-﻿namespace ExportPDF.WebSample
+namespace ExportPDF.WebSample.Models
 {
-    /// <summary>
-    /// Strongly-typed view model passed both to the Razor template
-    /// and surfaced in the API so callers know exactly what data to supply.
-    /// </summary>
     public sealed class InvoiceModel
     {
         public string InvoiceNumber { get; init; } = string.Empty;
@@ -19,7 +15,6 @@
         public decimal TaxAmount => Math.Round(Subtotal * TaxRate, 2);
         public decimal GrandTotal => Subtotal + TaxAmount;
 
-        /// <summary>VAT / tax rate expressed as a fraction, e.g. 0.20 for 20 %.</summary>
         public decimal TaxRate { get; init; } = 0.20m;
 
         public string? Notes { get; init; }

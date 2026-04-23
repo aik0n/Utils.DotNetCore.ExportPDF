@@ -1,0 +1,56 @@
+@model TypographyModel
+@{
+    ViewData["Title"] = "Typography & Fonts";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h1 class="mb-1">@Model.Title</h1>
+        <p class="text-muted mb-0">Custom fonts, Unicode, long text, and print CSS</p>
+    </div>
+    <a asp-controller="Documents" asp-action="TypographyExport" class="btn btn-success">
+        &#x2193; Export to PDF
+    </a>
+</div>
+
+<h5 class="mb-3">Font Samples</h5>
+<div class="mb-4">
+    @foreach (var sample in Model.FontSamples)
+    {
+        <div class="card mb-2">
+            <div class="card-body py-2">
+                <small class="text-muted d-block mb-1">@sample.Name — <code>@sample.CssStack</code></small>
+                <p class="mb-0" style="font-family: @sample.CssStack; font-size: 1.1rem;">@sample.PreviewText</p>
+            </div>
+        </div>
+    }
+</div>
+
+<h5 class="mb-3">Unicode &amp; Special Characters</h5>
+<div class="card mb-4">
+    <div class="card-body">
+        <p class="fs-4 mb-0">@Model.UnicodeShowcase</p>
+    </div>
+</div>
+
+<h5 class="mb-3">Long Text / Overflow</h5>
+<div class="card mb-4">
+    <div class="card-body" style="max-height: 200px; overflow-y: auto;">
+        <p class="mb-0" style="word-wrap: break-word; overflow-wrap: break-word;">@Model.LongParagraph</p>
+    </div>
+</div>
+
+<h5 class="mb-3">&#64;media print Demo</h5>
+<div class="card mb-4">
+    <div class="card-body">
+        <p class="mb-2">The PDF template includes a <code>@@media print</code> block that hides screen-only elements and adjusts colours for print output. Example:</p>
+        <pre class="bg-light p-3 rounded mb-0"><code>@@media print {
+  .screen-only { display: none; }
+  body { color: #000; background: #fff; }
+}</code></pre>
+    </div>
+</div>
+
+<div class="alert alert-secondary">
+    <strong>Page size note:</strong> @Model.PageSizeNote
+</div>
