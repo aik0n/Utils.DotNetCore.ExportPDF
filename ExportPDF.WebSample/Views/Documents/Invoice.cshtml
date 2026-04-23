@@ -1,0 +1,16 @@
+@model InvoiceModel
+@{
+    ViewData["Title"] = "Invoice Preview";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h1 class="mb-1">Invoice <span class="text-muted fs-4">#@Model.InvoiceNumber</span></h1>
+        <p class="text-muted mb-0">Preview of the invoice document</p>
+    </div>
+    <form asp-controller="Documents" asp-action="Invoice" method="post">
+        <button type="submit" class="btn btn-success">&#x2193; Export to PDF</button>
+    </form>
+</div>
+
+@await Html.PartialAsync("_InvoicePartial", Model)

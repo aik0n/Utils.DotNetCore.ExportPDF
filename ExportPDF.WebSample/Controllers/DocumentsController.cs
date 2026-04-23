@@ -1,8 +1,8 @@
+using ExportPDF.WebSample.Factories;
 using Microsoft.AspNetCore.Mvc;
 using PuppeteerSharp;
 using PuppeteerSharp.Media;
 using Utils.DotNetCore.ExportPDF;
-using ExportPDF.WebSample.Factories;
 
 namespace ExportPDF.WebSample.Controllers
 {
@@ -13,16 +13,18 @@ namespace ExportPDF.WebSample.Controllers
 
         public DocumentsController(IPdfDocumentGenerator pdfGenerator, IDocumentSampleFactory sampleFactory)
         {
-            _pdfGenerator = pdfGenerator;
-            _sampleFactory = sampleFactory;
+            _pdfGenerator = pdfGenerator ?? throw new ArgumentNullException(nameof(pdfGenerator));
+            _sampleFactory = sampleFactory ?? throw new ArgumentNullException(nameof(sampleFactory));
         }
 
-        public IActionResult InvoiceShow()
+        [HttpGet]
+        public async Task<IActionResult> Invoice()
         {
             return View(_sampleFactory.BuildInvoiceSample());
         }
 
-        public async Task<IActionResult> InvoiceExport()
+        [HttpPost]
+        public async Task<IActionResult> Invoice(string _)
         {
             var options = new PdfOptions
             {
@@ -32,8 +34,8 @@ namespace ExportPDF.WebSample.Controllers
             };
 
             var model = _sampleFactory.BuildInvoiceSample();
-            var bytes = await _pdfGenerator.GenerateAsync("/Views/Documents/InvoicePdfTemplate.cshtml", model, options);
-            
+            var bytes = await _pdfGenerator.GenerateAsync("/Views/Documents/InvoiceExport.cshtml", model, options);
+
             return File(bytes, "application/pdf", $"Invoice-{model.InvoiceNumber}.pdf");
         }
 
@@ -53,7 +55,7 @@ namespace ExportPDF.WebSample.Controllers
 
             var model = _sampleFactory.BuildLayoutShowcaseSample();
             var bytes = await _pdfGenerator.GenerateAsync("/Views/Documents/LayoutShowcasePdfTemplate.cshtml", model, options);
-            
+
             return File(bytes, "application/pdf", "LayoutShowcase.pdf");
         }
 
@@ -73,7 +75,7 @@ namespace ExportPDF.WebSample.Controllers
 
             var model = _sampleFactory.BuildTypographySample();
             var bytes = await _pdfGenerator.GenerateAsync("/Views/Documents/TypographyPdfTemplate.cshtml", model, options);
-            
+
             return File(bytes, "application/pdf", "Typography.pdf");
         }
 
@@ -91,7 +93,7 @@ namespace ExportPDF.WebSample.Controllers
                 PrintBackground = true,
                 MarginOptions = new MarginOptions { Top = "20px", Bottom = "20px" }
             };
-            
+
             var model = _sampleFactory.BuildPartialViewsSample();
             var bytes = await _pdfGenerator.GenerateAsync("/Views/Documents/PartialViewsPdfTemplate.cshtml", model, options);
 

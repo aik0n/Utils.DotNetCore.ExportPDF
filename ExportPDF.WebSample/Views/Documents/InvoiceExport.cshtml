@@ -1,0 +1,26 @@
+@inject IWebHostEnvironment _env
+@model InvoiceModel
+
+@{
+    Layout = null;
+    var bootstrapPath = System.IO.Path.Combine(_env.WebRootPath, "lib", "bootstrap", "dist", "css", "bootstrap.min.css");
+    var bootstrapCss = System.IO.File.ReadAllText(bootstrapPath);
+}
+
+<!DOCTYPE HTML>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=794, initial-scale=1.0" />
+    <style>
+        @Html.Raw(bootstrapCss)
+
+        body { padding: 20px 30px; font-size: 13px; }
+        .card { break-inside: avoid; }
+        a { text-decoration: none !important; color: inherit !important; }
+    </style>
+</head>
+<body>
+    @await Html.PartialAsync("_InvoicePartial", Model)
+</body>
+</html>

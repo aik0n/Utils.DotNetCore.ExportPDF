@@ -24,7 +24,7 @@ namespace ExportPDF.WebSample.Factories
                 });
             }
 
-            return new InvoiceModel
+            return new InvoiceModel()
             {
                 InvoiceNumber = $"INV-{issueDate.Year}-{faker.Random.Number(1000, 9999)}",
                 IssueDate = issueDate,
