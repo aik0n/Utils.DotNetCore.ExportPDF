@@ -1,12 +1,15 @@
-using System.Diagnostics;
-using Microsoft.AspNetCore.Mvc;
 using ExportPDF.WebSample.Models;
+using Microsoft.AspNetCore.Mvc;
+using System.Diagnostics;
 
 namespace ExportPDF.WebSample.Controllers
 {
     public class HomeController : Controller
     {
-        public IActionResult Index() => View();
+        public async Task<IActionResult> Index()
+        {
+            return View();
+        }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
