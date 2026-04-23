@@ -1,3 +1,4 @@
+using ExportPDF.WebSample.Factories;
 using Utils.DotNetCore.ExportPDF;
 
 namespace ExportPDF.WebSample
@@ -8,6 +9,7 @@ namespace ExportPDF.WebSample
         {
             var builder = WebApplication.CreateBuilder(args);
             builder.Services.AddControllersWithViews();
+            builder.Services.AddScoped<IDocumentSampleFactory, DocumentSampleFactory>();
 
             builder.Services
                 .AddPdfGenerator()
