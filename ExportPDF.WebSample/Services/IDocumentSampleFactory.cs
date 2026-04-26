@@ -4,7 +4,7 @@ namespace ExportPDF.WebSample.Services
 {
     public interface IDocumentSampleFactory
     {
-        InvoiceModel BuildInvoiceSample();
+        InvoiceModel BuildInvoiceSample(int? numberOfRows = null);
         LayoutShowcaseModel BuildLayoutShowcaseSample();
         TypographyModel BuildTypographySample();
         PartialViewModel BuildPartialViewsSample();

@@ -52,14 +52,15 @@ namespace ExportPDF.WebSample.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> InvoiceCss()
+        public async Task<IActionResult> InvoiceCss(int numberOfRows = 1000)
         {
-            var model = _sampleFactory.BuildInvoiceSample();
+            var model = _sampleFactory.BuildInvoiceSample(numberOfRows);
             var cacheKey = _documentCache.CreateCacheKey();
 
             _documentCache.Set(cacheKey, model, TimeSpan.FromMinutes(15));
 
             ViewData["CacheKey"] = cacheKey;
+            ViewData["NumberOfRows"] = numberOfRows;
 
             return View(model);
         }
@@ -74,7 +75,7 @@ namespace ExportPDF.WebSample.Controllers
                 MarginOptions = new MarginOptions { Top = "20px", Bottom = "20px" }
             };
 
-            var model = _documentCache.TryGetValue(cacheKey, out InvoiceModel? cached) ? cached! : _sampleFactory.BuildInvoiceSample();
+            var model = _documentCache.TryGetValue(cacheKey, out InvoiceModel? cached) ? cached! : _sampleFactory.BuildInvoiceSample(1000);
 
             var bytes = await _pdfGenerator.GenerateAsync("/Views/Documents/InvoiceCssExport.cshtml", model, options);
 

@@ -5,14 +5,14 @@ namespace ExportPDF.WebSample.Services
 {
     public class DocumentSampleFactory : IDocumentSampleFactory
     {
-        public InvoiceModel BuildInvoiceSample()
+        public InvoiceModel BuildInvoiceSample(int? numberOfRows = null)
         {
             var faker = new Faker("en");
             var issueDate = faker.Date.Recent(30).ToUniversalTime();
             var dueDate = issueDate.AddDays(30);
             var taxRates = new[] { 0.10m, 0.15m, 0.20m };
 
-            var itemCount = faker.Random.Number(2, 5);
+            var itemCount = numberOfRows ?? faker.Random.Number(2, 5);
             var items = new List<LineItem>();
             for (var i = 0; i < itemCount; i++)
             {
