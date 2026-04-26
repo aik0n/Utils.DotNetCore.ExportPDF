@@ -72,7 +72,12 @@ namespace ExportPDF.WebSample.Controllers
             {
                 Format = PaperFormat.A4,
                 PrintBackground = true,
-                MarginOptions = new MarginOptions { Top = "20px", Bottom = "20px" }
+                DisplayHeaderFooter = true,
+                HeaderTemplate = "<span></span>",
+                FooterTemplate = "<div style='width:100%; font-family:Segoe UI,Arial,sans-serif; font-size:9px !important; color:#6b7280; text-align:right; padding-right:30px;'>" +
+                                 "Page <span class='pageNumber'></span> of <span class='totalPages'></span>" +
+                                 "</div>",
+                MarginOptions = new MarginOptions { Top = "20px", Bottom = "50px" }
             };
 
             var model = _documentCache.TryGetValue(cacheKey, out InvoiceModel? cached) ? cached! : _sampleFactory.BuildInvoiceSample(1000);
