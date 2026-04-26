@@ -1,5 +1,7 @@
-using ExportPDF.WebSample.Factories;
+using ExportPDF.WebSample.Models;
+using ExportPDF.WebSample.Services;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Caching.Memory;
 using PuppeteerSharp;
 using PuppeteerSharp.Media;
 using Utils.DotNetCore.ExportPDF;
@@ -10,21 +12,27 @@ namespace ExportPDF.WebSample.Controllers
     {
         private readonly IPdfDocumentGenerator _pdfGenerator;
         private readonly IDocumentSampleFactory _sampleFactory;
+        private readonly IDocumentCache _documentCache;
 
-        public DocumentsController(IPdfDocumentGenerator pdfGenerator, IDocumentSampleFactory sampleFactory)
+        public DocumentsController(IPdfDocumentGenerator pdfGenerator, IDocumentSampleFactory sampleFactory, IDocumentCache documentCache)
         {
             _pdfGenerator = pdfGenerator ?? throw new ArgumentNullException(nameof(pdfGenerator));
             _sampleFactory = sampleFactory ?? throw new ArgumentNullException(nameof(sampleFactory));
+            _documentCache = documentCache ?? throw new ArgumentNullException(nameof(documentCache));
         }
 
         [HttpGet]
         public async Task<IActionResult> Invoice()
         {
-            return View(_sampleFactory.BuildInvoiceSample());
+            var model = _sampleFactory.BuildInvoiceSample();
+            var cacheKey = _documentCache.CreateCacheKey();
+            _documentCache.Set(cacheKey, model, TimeSpan.FromMinutes(15));
+            ViewData["CacheKey"] = cacheKey;
+            return View(model);
         }
 
         [HttpPost]
-        public async Task<IActionResult> Invoice(string _)
+        public async Task<IActionResult> Invoice([FromForm] string cacheKey)
         {
             var options = new PdfOptions
             {
@@ -33,7 +41,8 @@ namespace ExportPDF.WebSample.Controllers
                 MarginOptions = new MarginOptions { Top = "20px", Bottom = "20px" }
             };
 
-            var model = _sampleFactory.BuildInvoiceSample();
+            var model = _documentCache.TryGetValue(cacheKey, out InvoiceModel? cached) ? cached! : _sampleFactory.BuildInvoiceSample();
+
             var bytes = await _pdfGenerator.GenerateAsync("/Views/Documents/InvoiceExport.cshtml", model, options);
 
             return File(bytes, "application/pdf", $"Invoice-{model.InvoiceNumber}.pdf");

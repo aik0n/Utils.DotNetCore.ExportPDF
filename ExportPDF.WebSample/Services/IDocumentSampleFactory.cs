@@ -1,6 +1,6 @@
 using ExportPDF.WebSample.Models;
 
-namespace ExportPDF.WebSample.Factories
+namespace ExportPDF.WebSample.Services
 {
     public interface IDocumentSampleFactory
     {

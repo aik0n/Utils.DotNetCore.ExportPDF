@@ -1,7 +1,7 @@
 using Bogus;
 using ExportPDF.WebSample.Models;
 
-namespace ExportPDF.WebSample.Factories
+namespace ExportPDF.WebSample.Services
 {
     public class DocumentSampleFactory : IDocumentSampleFactory
     {

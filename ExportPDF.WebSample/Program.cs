@@ -1,4 +1,4 @@
-using ExportPDF.WebSample.Factories;
+using ExportPDF.WebSample.Services;
 using Utils.DotNetCore.ExportPDF;
 
 namespace ExportPDF.WebSample
@@ -9,6 +9,8 @@ namespace ExportPDF.WebSample
         {
             var builder = WebApplication.CreateBuilder(args);
             builder.Services.AddControllersWithViews();
+            builder.Services.AddMemoryCache();
+            builder.Services.AddSingleton<IDocumentCache, DocumentCache>();
             builder.Services.AddScoped<IDocumentSampleFactory, DocumentSampleFactory>();
 
             builder.Services

@@ -9,6 +9,7 @@
         <p class="text-muted mb-0">Preview of the invoice document</p>
     </div>
     <form asp-controller="Documents" asp-action="Invoice" method="post">
+        <input type="hidden" name="cacheKey" value="@ViewData["CacheKey"]" />
         <button type="submit" class="btn btn-success">&#x2193; Export to PDF</button>
     </form>
 </div>
