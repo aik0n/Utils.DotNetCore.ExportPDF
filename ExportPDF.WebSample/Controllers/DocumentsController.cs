@@ -22,17 +22,20 @@ namespace ExportPDF.WebSample.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Invoice()
+        public async Task<IActionResult> InvoiceBootstrap()
         {
             var model = _sampleFactory.BuildInvoiceSample();
             var cacheKey = _documentCache.CreateCacheKey();
+
             _documentCache.Set(cacheKey, model, TimeSpan.FromMinutes(15));
+            
             ViewData["CacheKey"] = cacheKey;
+            
             return View(model);
         }
 
         [HttpPost]
-        public async Task<IActionResult> Invoice([FromForm] string cacheKey)
+        public async Task<IActionResult> InvoiceBootstrap([FromForm] string cacheKey)
         {
             var options = new PdfOptions
             {
@@ -43,7 +46,7 @@ namespace ExportPDF.WebSample.Controllers
 
             var model = _documentCache.TryGetValue(cacheKey, out InvoiceModel? cached) ? cached! : _sampleFactory.BuildInvoiceSample();
 
-            var bytes = await _pdfGenerator.GenerateAsync("/Views/Documents/InvoiceExport.cshtml", model, options);
+            var bytes = await _pdfGenerator.GenerateAsync("/Views/Documents/InvoiceBootstrapExport.cshtml", model, options);
 
             return File(bytes, "application/pdf", $"Invoice-{model.InvoiceNumber}.pdf");
         }

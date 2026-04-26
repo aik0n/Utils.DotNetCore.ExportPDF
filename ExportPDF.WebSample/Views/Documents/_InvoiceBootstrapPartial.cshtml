@@ -1,8 +1,8 @@
 @model InvoiceModel
 
 <div class="row mb-4">
-    <div class="col-md-6">
-        <div class="card">
+    <div class="col-md-6 d-flex">
+        <div class="card w-100">
             <div class="card-header text-uppercase small text-muted fw-semibold">From</div>
             <div class="card-body">
                 <p class="mb-1 fw-bold">@Model.BillFrom.Name</p>
@@ -11,8 +11,8 @@
             </div>
         </div>
     </div>
-    <div class="col-md-6">
-        <div class="card">
+    <div class="col-md-6 d-flex">
+        <div class="card w-100">
             <div class="card-header text-uppercase small text-muted fw-semibold">Bill To</div>
             <div class="card-body">
                 <p class="mb-1 fw-bold">@Model.BillTo.Name</p>
