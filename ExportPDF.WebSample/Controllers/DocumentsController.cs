@@ -51,6 +51,36 @@ namespace ExportPDF.WebSample.Controllers
             return File(bytes, "application/pdf", $"Invoice-{model.InvoiceNumber}.pdf");
         }
 
+        [HttpGet]
+        public async Task<IActionResult> InvoiceCss()
+        {
+            var model = _sampleFactory.BuildInvoiceSample();
+            var cacheKey = _documentCache.CreateCacheKey();
+
+            _documentCache.Set(cacheKey, model, TimeSpan.FromMinutes(15));
+
+            ViewData["CacheKey"] = cacheKey;
+
+            return View(model);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> InvoiceCss([FromForm] string cacheKey)
+        {
+            var options = new PdfOptions
+            {
+                Format = PaperFormat.A4,
+                PrintBackground = true,
+                MarginOptions = new MarginOptions { Top = "20px", Bottom = "20px" }
+            };
+
+            var model = _documentCache.TryGetValue(cacheKey, out InvoiceModel? cached) ? cached! : _sampleFactory.BuildInvoiceSample();
+
+            var bytes = await _pdfGenerator.GenerateAsync("/Views/Documents/InvoiceCssExport.cshtml", model, options);
+
+            return File(bytes, "application/pdf", $"Invoice-{model.InvoiceNumber}.pdf");
+        }
+
         public IActionResult LayoutShowcaseShow()
         {
             return View(_sampleFactory.BuildLayoutShowcaseSample());

@@ -1,17 +1,18 @@
 @model InvoiceModel
+
 @{
-    ViewData["Title"] = "Invoice Bootstrap";
+    ViewData["Title"] = "Invoice CSS Only";
 }
 
 <div class="d-flex justify-content-between align-items-center mb-4">
     <div>
         <h1 class="mb-1">Invoice <span class="text-muted fs-4">#@Model.InvoiceNumber</span></h1>
-        <p class="text-muted mb-0">Preview of the invoice document</p>
+        <p class="text-muted mb-0">Preview of the invoice document — plain CSS, no Bootstrap</p>
     </div>
-    <form asp-controller="Documents" asp-action="InvoiceBootstrap" method="post">
+    <form asp-controller="Documents" asp-action="InvoiceCss" method="post">
         <input type="hidden" name="cacheKey" value="@ViewData["CacheKey"]" />
         <button type="submit" class="btn btn-success">&#x2193; Export to PDF</button>
     </form>
 </div>
 
-@await Html.PartialAsync("_InvoiceBootstrapPartial", Model)
+@await Html.PartialAsync("_InvoiceCssPartial", Model)

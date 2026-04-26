@@ -1,0 +1,265 @@
+@model InvoiceModel
+
+<style>
+    .inv-wrap {
+        --brand:   #2563eb;
+        --brand2:  #1d4ed8;
+        --ink:     #1f2937;
+        --muted:   #6b7280;
+        --border:  #e5e7eb;
+        --row-alt: #eff6ff;
+        --accent:  #bfdbfe;
+        font-family: 'Segoe UI', Arial, sans-serif;
+        font-size: 13px;
+        color: var(--ink);
+    }
+
+    .inv-header {
+        background: linear-gradient(90deg, var(--brand), var(--brand2));
+        color: #fff;
+        padding: 18px 28px;
+        display: flex;
+        justify-content: space-between;
+        align-items: baseline;
+        border-radius: 6px 6px 0 0;
+        break-inside: avoid;
+    }
+
+    .inv-header-company {
+        font-size: 20px;
+        font-weight: 700;
+        letter-spacing: -0.3px;
+    }
+
+    .inv-header-number {
+        font-size: 13px;
+        opacity: 0.85;
+    }
+
+    .inv-parties {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 16px;
+        margin: 20px 0 16px;
+        break-inside: avoid;
+    }
+
+    .inv-party {
+        border: 1px solid var(--border);
+        border-radius: 6px;
+        overflow: hidden;
+    }
+
+    .inv-party-label {
+        background: var(--accent);
+        color: var(--ink);
+        font-size: 10px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        padding: 5px 12px;
+    }
+
+    .inv-party-body {
+        padding: 10px 12px;
+        line-height: 1.6;
+    }
+
+    .inv-party-name {
+        font-weight: 600;
+        margin-bottom: 2px;
+    }
+
+    .inv-party-meta {
+        color: var(--muted);
+        font-size: 12px;
+    }
+
+    .inv-dates {
+        display: flex;
+        gap: 32px;
+        margin-bottom: 18px;
+        font-size: 12px;
+    }
+
+    .inv-dates-label {
+        color: var(--muted);
+        margin-right: 4px;
+    }
+
+    .inv-table {
+        width: 100%;
+        border-collapse: collapse;
+        break-inside: avoid;
+    }
+
+    .inv-table thead tr {
+        background: linear-gradient(90deg, var(--brand), var(--brand2));
+        color: #fff;
+    }
+
+    .inv-table thead th {
+        padding: 9px 12px;
+        font-size: 11px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+        text-align: left;
+    }
+
+    .inv-table thead th:not(:first-child) {
+        text-align: right;
+    }
+
+    .inv-table tbody tr:nth-child(even) {
+        background: var(--row-alt);
+    }
+
+    .inv-table tbody tr:nth-child(odd) {
+        background: #fff;
+    }
+
+    .inv-table tbody td {
+        padding: 8px 12px;
+        border-bottom: 1px solid var(--border);
+        text-align: left;
+    }
+
+    .inv-table tbody td:not(:first-child) {
+        text-align: right;
+    }
+
+    .inv-totals-wrap {
+        display: flex;
+        justify-content: flex-end;
+        margin-top: 16px;
+        margin-bottom: 20px;
+        break-inside: avoid;
+    }
+
+    .inv-totals {
+        width: 260px;
+        border-collapse: collapse;
+    }
+
+    .inv-totals td {
+        padding: 5px 10px;
+        font-size: 13px;
+    }
+
+    .inv-totals td:last-child {
+        text-align: right;
+    }
+
+    .inv-totals-label {
+        color: var(--muted);
+    }
+
+    .inv-grand td {
+        border-top: 2px solid var(--brand);
+        font-weight: 700;
+        font-size: 14px;
+        padding-top: 8px;
+    }
+
+    .inv-notes {
+        border-left: 4px solid var(--brand);
+        background: var(--row-alt);
+        border-radius: 0 6px 6px 0;
+        padding: 12px 16px;
+        font-size: 12px;
+        line-height: 1.6;
+        break-inside: avoid;
+    }
+
+    .inv-notes-title {
+        font-weight: 700;
+        color: var(--brand2);
+        margin-bottom: 4px;
+        font-size: 11px;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+    }
+</style>
+
+<div class="inv-wrap">
+
+    <div class="inv-header">
+        <span class="inv-header-company">@Model.BillFrom.Name</span>
+        <span class="inv-header-number">Invoice #@Model.InvoiceNumber</span>
+    </div>
+
+    <div class="inv-parties">
+        <div class="inv-party">
+            <div class="inv-party-label">From</div>
+            <div class="inv-party-body">
+                <div class="inv-party-name">@Model.BillFrom.Name</div>
+                <div class="inv-party-meta">@Model.BillFrom.Address</div>
+                <div class="inv-party-meta">@Model.BillFrom.Email</div>
+            </div>
+        </div>
+        <div class="inv-party">
+            <div class="inv-party-label">Bill To</div>
+            <div class="inv-party-body">
+                <div class="inv-party-name">@Model.BillTo.Name</div>
+                <div class="inv-party-meta">@Model.BillTo.Address</div>
+                <div class="inv-party-meta">@Model.BillTo.Email</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="inv-dates">
+        <span><span class="inv-dates-label">Issued:</span><strong>@Model.IssueDate.ToString("MMMM d, yyyy")</strong></span>
+        <span><span class="inv-dates-label">Due:</span><strong>@Model.DueDate.ToString("MMMM d, yyyy")</strong></span>
+    </div>
+
+    <table class="inv-table">
+        <thead>
+            <tr>
+                <th>Description</th>
+                <th>Qty</th>
+                <th>Unit Price</th>
+                <th>Total</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.Items)
+            {
+                <tr>
+                    <td>@item.Description</td>
+                    <td>@item.Quantity</td>
+                    <td>$@item.UnitPrice.ToString("N2")</td>
+                    <td>$@item.Total.ToString("N2")</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <div class="inv-totals-wrap">
+        <table class="inv-totals">
+            <tbody>
+                <tr>
+                    <td class="inv-totals-label">Subtotal</td>
+                    <td>$@Model.Subtotal.ToString("N2")</td>
+                </tr>
+                <tr>
+                    <td class="inv-totals-label">Tax (@((Model.TaxRate * 100).ToString("0"))%)</td>
+                    <td>$@Model.TaxAmount.ToString("N2")</td>
+                </tr>
+                <tr class="inv-grand">
+                    <td>Grand Total</td>
+                    <td>$@Model.GrandTotal.ToString("N2")</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    @if (!string.IsNullOrWhiteSpace(Model.Notes))
+    {
+        <div class="inv-notes">
+            <div class="inv-notes-title">Notes</div>
+            @Model.Notes
+        </div>
+    }
+
+</div>
