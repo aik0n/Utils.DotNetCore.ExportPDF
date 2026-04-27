@@ -28,9 +28,9 @@ namespace ExportPDF.WebSample.Controllers
             var cacheKey = _documentCache.CreateCacheKey();
 
             _documentCache.Set(cacheKey, model, TimeSpan.FromMinutes(15));
-            
+
             ViewData["CacheKey"] = cacheKey;
-            
+
             return View(model);
         }
 
@@ -88,7 +88,7 @@ namespace ExportPDF.WebSample.Controllers
         }
 
         [HttpGet]
-        public IActionResult LayoutShowcaseShow()
+        public async Task<IActionResult> LayoutShowcase()
         {
             var model = _sampleFactory.BuildLayoutShowcaseSample();
             var cacheKey = _documentCache.CreateCacheKey();
@@ -101,11 +101,12 @@ namespace ExportPDF.WebSample.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> LayoutShowcaseShow([FromForm] string cacheKey)
+        public async Task<IActionResult> LayoutShowcase([FromForm] string cacheKey, [FromForm] bool isLandscape = false)
         {
             var options = new PdfOptions
             {
                 Format = PaperFormat.A4,
+                Landscape = isLandscape,
                 PrintBackground = true,
                 MarginOptions = new MarginOptions { Top = "20px", Bottom = "20px" }
             };
@@ -118,7 +119,7 @@ namespace ExportPDF.WebSample.Controllers
         }
 
         [HttpGet]
-        public IActionResult TypographyShow()
+        public async Task<IActionResult> TypographyShow()
         {
             var model = _sampleFactory.BuildTypographySample();
             var cacheKey = _documentCache.CreateCacheKey();
@@ -148,7 +149,7 @@ namespace ExportPDF.WebSample.Controllers
         }
 
         [HttpGet]
-        public IActionResult PartialViewsShow()
+        public async Task<IActionResult> PartialViewsShow()
         {
             var model = _sampleFactory.BuildPartialViewsSample();
             var cacheKey = _documentCache.CreateCacheKey();
