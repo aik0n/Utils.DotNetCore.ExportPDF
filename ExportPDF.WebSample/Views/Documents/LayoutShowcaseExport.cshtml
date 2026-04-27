@@ -1,8 +1,10 @@
-@model ExportPDF.WebSample.Models.LayoutShowcaseModel
+@model LayoutShowcaseModel
+
 @{
     Layout = null;
 }
-<!DOCTYPE html>
+
+<!DOCTYPE HTML>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -96,35 +98,7 @@
         <div class="watermark">@Model.WatermarkText</div>
     }
 
-    <div class="content">
-
-        <div class="page-title">@Model.Title</div>
-
-        <!-- ── Two-column layout ──────────────────────────────── -->
-        <div class="columns">
-            <div class="col">
-                <div class="col-heading">@Model.LeftColumn.Heading</div>
-                <div class="col-body">@Model.LeftColumn.Body</div>
-            </div>
-            <div class="col">
-                <div class="col-heading">@Model.RightColumn.Heading</div>
-                <div class="col-body">@Model.RightColumn.Body</div>
-            </div>
-        </div>
-
-        <!-- ── Tab panels (stacked for PDF) ──────────────────── -->
-        <div class="tabs-section">
-            <h3>Tab Panels</h3>
-            @foreach (var tab in Model.Tabs)
-            {
-                <div class="tab-panel @(tab.IsActive ? "active" : "")">
-                    <div class="tab-label">@tab.Label</div>
-                    <div class="tab-content-inner">@tab.Content</div>
-                </div>
-            }
-        </div>
-
-    </div>
+    @await Html.PartialAsync("_LayoutShowcasePartial", Model)
 
 </body>
 </html>

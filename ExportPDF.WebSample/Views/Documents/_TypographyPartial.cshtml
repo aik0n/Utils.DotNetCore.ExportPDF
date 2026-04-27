@@ -1,0 +1,28 @@
+@model TypographyModel
+
+<div class="page-title">@Model.Title</div>
+
+<div class="section-heading">Font Samples</div>
+
+@foreach (var sample in Model.FontSamples)
+{
+    <div class="font-sample">
+        <div class="font-meta">@sample.Name &mdash; <em>@sample.CssStack</em></div>
+        <div class="font-preview" style="font-family: @Html.Raw(sample.CssStack);">@sample.PreviewText</div>
+    </div>
+}
+
+<div class="section-heading">Unicode &amp; Special Characters</div>
+<div class="unicode-block">@Model.UnicodeShowcase</div>
+
+<div class="section-heading">Long Text &amp; Overflow</div>
+<p class="long-para">@Model.LongParagraph</p>
+
+<div class="section-heading">&#64;media print Rules</div>
+<div class="code-block">&#64;media print {
+  .screen-only { display: none !important; }
+  body { color: #000 !important; background: #fff !important; }
+  .print-highlight { background: #fffde7 !important; }
+}</div>
+
+<div class="page-note">@Model.PageSizeNote</div>

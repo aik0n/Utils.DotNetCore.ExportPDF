@@ -1,7 +1,9 @@
-@model ExportPDF.WebSample.Models.PartialViewModel
+@model PartialViewModel
+
 @{
     Layout = null;
 }
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -48,43 +50,6 @@
     </style>
 </head>
 <body>
-
-    @{ RenderDocHeader(Model.Header); }
-
-    @foreach (var sec in Model.Sections)
-    {
-        <div class="section @(sec.IsHighlighted ? "highlighted" : "")">
-            <div class="section-title">
-                @sec.SectionTitle
-                @if (sec.IsHighlighted)
-                {
-                    <span class="badge">HIGHLIGHTED</span>
-                }
-            </div>
-            <div class="section-body">@sec.Body</div>
-        </div>
-    }
-
-    @{ RenderDocFooter(Model.Footer); }
-
+    @await Html.PartialAsync("_PartialViewsPartial", Model)
 </body>
 </html>
-
-@functions {
-    void RenderDocHeader(ExportPDF.WebSample.Models.DocumentHeader h)
-    {
-        <div class="doc-header">
-            <div class="company">@h.CompanyName</div>
-            <div class="doc-title">@h.DocumentTitle</div>
-            <div class="generated">Generated: @h.GeneratedAt.ToString("yyyy-MM-dd HH:mm") UTC</div>
-        </div>
-    }
-
-    void RenderDocFooter(ExportPDF.WebSample.Models.DocumentFooter f)
-    {
-        <div class="doc-footer">
-            <span>@f.ConfidentialityNote</span>
-            <span>Page @f.PageNumber</span>
-        </div>
-    }
-}

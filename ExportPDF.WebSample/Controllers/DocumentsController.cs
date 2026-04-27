@@ -87,12 +87,21 @@ namespace ExportPDF.WebSample.Controllers
             return File(bytes, "application/pdf", $"Invoice-{model.InvoiceNumber}.pdf");
         }
 
+        [HttpGet]
         public IActionResult LayoutShowcaseShow()
         {
-            return View(_sampleFactory.BuildLayoutShowcaseSample());
+            var model = _sampleFactory.BuildLayoutShowcaseSample();
+            var cacheKey = _documentCache.CreateCacheKey();
+
+            _documentCache.Set(cacheKey, model, TimeSpan.FromMinutes(15));
+
+            ViewData["CacheKey"] = cacheKey;
+
+            return View(model);
         }
 
-        public async Task<IActionResult> LayoutShowcaseExport()
+        [HttpPost]
+        public async Task<IActionResult> LayoutShowcaseShow([FromForm] string cacheKey)
         {
             var options = new PdfOptions
             {
@@ -101,18 +110,28 @@ namespace ExportPDF.WebSample.Controllers
                 MarginOptions = new MarginOptions { Top = "20px", Bottom = "20px" }
             };
 
-            var model = _sampleFactory.BuildLayoutShowcaseSample();
-            var bytes = await _pdfGenerator.GenerateAsync("/Views/Documents/LayoutShowcasePdfTemplate.cshtml", model, options);
+            var model = _documentCache.TryGetValue(cacheKey, out LayoutShowcaseModel? cachedLayout) ? cachedLayout! : _sampleFactory.BuildLayoutShowcaseSample();
+
+            var bytes = await _pdfGenerator.GenerateAsync("/Views/Documents/LayoutShowcaseExport.cshtml", model, options);
 
             return File(bytes, "application/pdf", "LayoutShowcase.pdf");
         }
 
+        [HttpGet]
         public IActionResult TypographyShow()
         {
-            return View(_sampleFactory.BuildTypographySample());
+            var model = _sampleFactory.BuildTypographySample();
+            var cacheKey = _documentCache.CreateCacheKey();
+
+            _documentCache.Set(cacheKey, model, TimeSpan.FromMinutes(15));
+
+            ViewData["CacheKey"] = cacheKey;
+
+            return View(model);
         }
 
-        public async Task<IActionResult> TypographyExport()
+        [HttpPost]
+        public async Task<IActionResult> TypographyShow([FromForm] string cacheKey)
         {
             var options = new PdfOptions
             {
@@ -121,29 +140,40 @@ namespace ExportPDF.WebSample.Controllers
                 MarginOptions = new MarginOptions { Top = "20px", Bottom = "20px" }
             };
 
-            var model = _sampleFactory.BuildTypographySample();
-            var bytes = await _pdfGenerator.GenerateAsync("/Views/Documents/TypographyPdfTemplate.cshtml", model, options);
+            var model = _documentCache.TryGetValue(cacheKey, out TypographyModel? cachedTypography) ? cachedTypography! : _sampleFactory.BuildTypographySample();
+
+            var bytes = await _pdfGenerator.GenerateAsync("/Views/Documents/TypographyExport.cshtml", model, options);
 
             return File(bytes, "application/pdf", "Typography.pdf");
         }
 
+        [HttpGet]
         public IActionResult PartialViewsShow()
         {
-            return View(_sampleFactory.BuildPartialViewsSample());
+            var model = _sampleFactory.BuildPartialViewsSample();
+            var cacheKey = _documentCache.CreateCacheKey();
+
+            _documentCache.Set(cacheKey, model, TimeSpan.FromMinutes(15));
+
+            ViewData["CacheKey"] = cacheKey;
+
+            return View(model);
         }
 
-        public async Task<IActionResult> PartialViewsExport()
+        [HttpPost]
+        public async Task<IActionResult> PartialViewsShow([FromForm] string cacheKey)
         {
+            var model = _documentCache.TryGetValue(cacheKey, out PartialViewModel? cachedPartial) ? cachedPartial! : _sampleFactory.BuildPartialViewsSample();
+
             var options = new PdfOptions
             {
                 Format = PaperFormat.A4,
-                Landscape = true,
+                Landscape = model.IsLandscape,
                 PrintBackground = true,
                 MarginOptions = new MarginOptions { Top = "20px", Bottom = "20px" }
             };
 
-            var model = _sampleFactory.BuildPartialViewsSample();
-            var bytes = await _pdfGenerator.GenerateAsync("/Views/Documents/PartialViewsPdfTemplate.cshtml", model, options);
+            var bytes = await _pdfGenerator.GenerateAsync("/Views/Documents/PartialViewsExport.cshtml", model, options);
 
             return File(bytes, "application/pdf", "PartialViews.pdf");
         }

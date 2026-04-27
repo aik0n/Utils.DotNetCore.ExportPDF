@@ -1,0 +1,29 @@
+@model LayoutShowcaseModel
+
+<div class="content">
+
+    <div class="page-title">@Model.Title</div>
+
+    <div class="columns">
+        <div class="col">
+            <div class="col-heading">@Model.LeftColumn.Heading</div>
+            <div class="col-body">@Model.LeftColumn.Body</div>
+        </div>
+        <div class="col">
+            <div class="col-heading">@Model.RightColumn.Heading</div>
+            <div class="col-body">@Model.RightColumn.Body</div>
+        </div>
+    </div>
+
+    <div class="tabs-section">
+        <h3>Tab Panels</h3>
+        @foreach (var tab in Model.Tabs)
+        {
+            <div class="tab-panel @(tab.IsActive ? "active" : "")">
+                <div class="tab-label">@tab.Label</div>
+                <div class="tab-content-inner">@tab.Content</div>
+            </div>
+        }
+    </div>
+
+</div>

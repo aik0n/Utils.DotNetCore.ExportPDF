@@ -1,6 +1,41 @@
 @model PartialViewModel
+
 @{
     ViewData["Title"] = "Partial Views & Composition";
+}
+
+@section Styles {
+    <style>
+        .doc-header {
+            display: flex; justify-content: space-between; align-items: flex-end;
+            border-bottom: 3px solid #4a90d9; padding-bottom: 14px;
+            margin-bottom: 28px;
+        }
+        .doc-header .company { font-size: 20px; font-weight: 700; color: #4a90d9; }
+        .doc-header .doc-title { font-size: 16px; font-weight: 600; color: #1a1a2e; }
+        .doc-header .generated { font-size: 10px; color: #888; }
+
+        .section {
+            border: 1px solid #dde6f0; border-radius: 6px;
+            padding: 14px 16px; margin-bottom: 14px; background: #fff;
+        }
+        .section.highlighted { background: #fffde7; border-color: #f5c542; }
+        .section-title {
+            font-size: 13px; font-weight: 700; margin-bottom: 6px; color: #1a1a2e;
+        }
+        .section-title .badge {
+            display: inline-block; font-size: 9px; padding: 2px 6px;
+            background: #f5c542; color: #1a1a2e; border-radius: 3px;
+            margin-left: 8px; vertical-align: middle; font-weight: 600;
+        }
+        .section-body { font-size: 12.5px; line-height: 1.6; color: #444; }
+
+        .doc-footer {
+            margin-top: 36px; border-top: 1px solid #e0e0e0; padding-top: 12px;
+            display: flex; justify-content: space-between;
+            font-size: 10px; color: #999;
+        }
+    </style>
 }
 
 <div class="d-flex justify-content-between align-items-center mb-4">
@@ -8,9 +43,10 @@
         <h1 class="mb-1">@Model.Title</h1>
         <p class="text-muted mb-0">Shared header/footer, conditional sections, page orientation</p>
     </div>
-    <a asp-controller="Documents" asp-action="PartialViewsExport" class="btn btn-success">
-        &#x2193; Export to PDF
-    </a>
+    <form asp-controller="Documents" asp-action="PartialViewsShow" method="post">
+        <input type="hidden" name="cacheKey" value="@ViewData["CacheKey"]" />
+        <button type="submit" class="btn btn-success">&#x2193; Export to PDF</button>
+    </form>
 </div>
 
 @if (Model.IsLandscape)
@@ -18,35 +54,4 @@
     <div class="badge bg-info text-dark mb-3">Landscape orientation</div>
 }
 
-<div class="card mb-3 border-primary">
-    <div class="card-header bg-primary text-white d-flex justify-content-between">
-        <span>@Model.Header.CompanyName</span>
-        <span>@Model.Header.DocumentTitle</span>
-        <span class="small opacity-75">Generated: @Model.Header.GeneratedAt.ToString("yyyy-MM-dd HH:mm") UTC</span>
-    </div>
-    <div class="card-body p-0">
-
-        @foreach (var sec in Model.Sections)
-        {
-            <div class="p-3 border-bottom @(sec.IsHighlighted ? "bg-warning bg-opacity-25" : "")">
-                <h6 class="fw-semibold mb-1">
-                    @sec.SectionTitle
-                    @if (sec.IsHighlighted)
-                    {
-                        <span class="badge bg-warning text-dark ms-2">Highlighted</span>
-                    }
-                </h6>
-                <p class="mb-0 text-muted small">@sec.Body</p>
-            </div>
-        }
-
-    </div>
-    <div class="card-footer text-muted d-flex justify-content-between small">
-        <span>@Model.Footer.ConfidentialityNote</span>
-        <span>Page @Model.Footer.PageNumber</span>
-    </div>
-</div>
-
-<div class="alert alert-info">
-    <strong>PDF composition note:</strong> In the exported PDF, the shared header and footer are rendered via <code>@@functions</code> helpers defined in the template, demonstrating reusable component composition within a self-contained Razor template.
-</div>
+@await Html.PartialAsync("_PartialViewsPartial", Model)
