@@ -3,73 +3,23 @@
 
 @{
     Layout = null;
-    var cssPath = System.IO.Path.Combine(Env.WebRootPath, "css", "layout-showcase.css");
-    var sharedCss = await System.IO.File.ReadAllTextAsync(cssPath);
+    var bootstrapPath = System.IO.Path.Combine(Env.WebRootPath, "lib", "bootstrap", "dist", "css", "bootstrap.min.css");
+    var bootstrapCss = await System.IO.File.ReadAllTextAsync(bootstrapPath);
 }
 
 <!DOCTYPE HTML>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
-    <style>@Html.Raw(sharedCss)</style>
+    <style>@Html.Raw(bootstrapCss)</style>
     <style>
-        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-        body { font-family: 'Segoe UI', Arial, sans-serif; font-size: 13px;
-               color: #1a1a2e; background: #fff; padding: 40px 50px; position: relative; }
-
-        /* ── Watermark ─────────────────────────────────────────── */
-        .watermark {
-            position: fixed;
-            top: 50%; left: 50%;
-            transform: translate(-50%, -50%) rotate(-45deg);
-            font-size: 90px; font-weight: 900;
-            color: rgba(0,0,0,0.07);
-            pointer-events: none;
-            z-index: 0;
-            white-space: nowrap;
-            letter-spacing: 8px;
-        }
-
-        /* ── Background letterhead ─────────────────────────────── */
-        .letterhead {
-            position: fixed;
-            top: 0; left: 0; right: 0;
-            height: 8px;
-            background: linear-gradient(90deg, #4a90d9 0%, #1b6ec2 100%);
-        }
-        .letterhead-bottom {
-            position: fixed;
-            bottom: 0; left: 0; right: 0;
-            height: 8px;
-            background: linear-gradient(90deg, #1b6ec2 0%, #4a90d9 100%);
-        }
-
-        /* ── Tab navigation (Bootstrap not available in PDF) ───── */
-        .nav-tabs {
-            list-style: none; display: flex; gap: 0; padding: 0; margin: 0;
-            border-bottom: 2px solid #4a90d9;
-        }
-        .nav-item { display: inline; }
-        .nav-link {
-            display: inline-block; padding: 6px 14px;
-            font-size: 11px; font-weight: 600; letter-spacing: 0.4px;
-            color: #4a90d9; background: transparent;
-            border: 1px solid transparent; border-radius: 4px 4px 0 0;
-            margin-bottom: -2px; cursor: default;
-        }
-        .nav-link.active {
-            color: #fff; background: #4a90d9;
-            border-color: #4a90d9;
-        }
-
-        /* ── Force all tab panes visible for static PDF ─────────── */
-        .tab-pane { display: block !important; opacity: 1 !important; background: #fff; }
+        .watermark { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%) rotate(-45deg); font-size: 90px; font-weight: 900; color: rgba(0,0,0,0.07); pointer-events: none; z-index: 9999; white-space: nowrap; letter-spacing: 8px; }
+        .row.g-3 { display: grid !important; grid-template-columns: 1fr 1fr; grid-template-rows: auto 1fr; gap: 1rem; }
+        .row.g-3 > .col { display: grid !important; grid-template-rows: subgrid; grid-row: span 2; padding: 0 !important; }
+        .row.g-3 > .col > .card { display: grid; grid-template-rows: subgrid; grid-row: span 2; }
     </style>
 </head>
-<body>
-
-    <div class="letterhead"></div>
-    <div class="letterhead-bottom"></div>
+<body class="p-5 bg-white">
 
     @if (Model.ShowWatermark)
     {
