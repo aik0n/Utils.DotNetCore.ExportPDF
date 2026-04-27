@@ -51,6 +51,8 @@ namespace ExportPDF.WebSample.Services
         {
             var faker = new Faker("en");
             var watermarks = new[] { "DRAFT", "CONFIDENTIAL", "SAMPLE", "INTERNAL" };
+            
+            var paragraphCount = faker.Random.Number(10, 20);
 
             return new LayoutShowcaseModel
             {
@@ -73,6 +75,9 @@ namespace ExportPDF.WebSample.Services
                     new ColumnContent { Heading = faker.Lorem.Sentence(4), Body = faker.Lorem.Paragraph() },
                     new ColumnContent { Heading = faker.Lorem.Sentence(4), Body = faker.Lorem.Paragraph() }
                 ],
+                Overview = Enumerable.Range(0, paragraphCount)
+                    .Select(_ => faker.Lorem.Paragraph())
+                    .ToList()
             };
         }
 
