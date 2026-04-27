@@ -1,13 +1,17 @@
 @model LayoutShowcaseModel
+@inject Microsoft.AspNetCore.Hosting.IWebHostEnvironment Env
 
 @{
     Layout = null;
+    var cssPath = System.IO.Path.Combine(Env.WebRootPath, "css", "layout-showcase.css");
+    var sharedCss = await System.IO.File.ReadAllTextAsync(cssPath);
 }
 
 <!DOCTYPE HTML>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
+    <style>@Html.Raw(sharedCss)</style>
     <style>
         *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
         body { font-family: 'Segoe UI', Arial, sans-serif; font-size: 13px;
@@ -40,52 +44,26 @@
             background: linear-gradient(90deg, #1b6ec2 0%, #4a90d9 100%);
         }
 
-        /* ── Content wrapper ───────────────────────────────────── */
-        .content { position: relative; z-index: 1; }
-
-        /* ── Page title ────────────────────────────────────────── */
-        .page-title {
-            font-size: 24px; font-weight: 700; color: #4a90d9;
-            border-bottom: 3px solid #4a90d9; padding-bottom: 12px;
-            margin-bottom: 28px;
+        /* ── Tab navigation (Bootstrap not available in PDF) ───── */
+        .nav-tabs {
+            list-style: none; display: flex; gap: 0; padding: 0; margin: 0;
+            border-bottom: 2px solid #4a90d9;
+        }
+        .nav-item { display: inline; }
+        .nav-link {
+            display: inline-block; padding: 6px 14px;
+            font-size: 11px; font-weight: 600; letter-spacing: 0.4px;
+            color: #4a90d9; background: transparent;
+            border: 1px solid transparent; border-radius: 4px 4px 0 0;
+            margin-bottom: -2px; cursor: default;
+        }
+        .nav-link.active {
+            color: #fff; background: #4a90d9;
+            border-color: #4a90d9;
         }
 
-        /* ── Two-column layout ─────────────────────────────────── */
-        .columns { display: flex; gap: 24px; margin-bottom: 36px; }
-        .col { flex: 1; }
-        .col-heading {
-            font-size: 11px; text-transform: uppercase; letter-spacing: 1px;
-            color: #fff; background: #4a90d9; padding: 6px 12px;
-            border-radius: 4px 4px 0 0;
-        }
-        .col-body {
-            border: 1px solid #c8ddf5; border-top: none;
-            border-radius: 0 0 4px 4px; padding: 14px;
-            font-size: 12.5px; line-height: 1.6; color: #333;
-            background: #f7faff;
-        }
-
-        /* ── Tab panels (rendered as stacked sections) ─────────── */
-        .tabs-section { margin-bottom: 36px; }
-        .tabs-section h3 {
-            font-size: 13px; font-weight: 700; color: #1a1a2e;
-            margin-bottom: 12px;
-        }
-        .tab-panel {
-            border: 1px solid #c8ddf5; border-radius: 6px;
-            margin-bottom: 10px; overflow: hidden;
-        }
-        .tab-label {
-            background: #4a90d9; color: #fff;
-            padding: 7px 14px; font-size: 11px; font-weight: 600;
-            letter-spacing: 0.5px;
-        }
-        .tab-content-inner {
-            padding: 12px 14px; font-size: 12.5px; line-height: 1.55;
-            color: #333; background: #fff;
-        }
-        .tab-panel.active .tab-label { background: #1b6ec2; }
-        .tab-panel.active .tab-content-inner { background: #f0f6ff; }
+        /* ── Force all tab panes visible for static PDF ─────────── */
+        .tab-pane { display: block !important; opacity: 1 !important; background: #fff; }
     </style>
 </head>
 <body>

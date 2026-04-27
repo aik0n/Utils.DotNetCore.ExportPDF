@@ -16,14 +16,38 @@
     </div>
 
     <div class="tabs-section">
-        <h3>Tab Panels</h3>
-        @foreach (var tab in Model.Tabs)
-        {
-            <div class="tab-panel @(tab.IsActive ? "active" : "")">
-                <div class="tab-label">@tab.Label</div>
-                <div class="tab-content-inner">@tab.Content</div>
-            </div>
-        }
+        <h5 class="mb-3">Tab Panels</h5>
+        <ul class="nav nav-tabs mb-3" role="tablist">
+            @for (int i = 0; i < Model.Tabs.Count; i++)
+            {
+                var tab = Model.Tabs[i];
+                var tabId = $"tab-{i}";
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link @(tab.IsActive ? "active" : "")"
+                            id="@tabId-btn"
+                            data-bs-toggle="tab"
+                            data-bs-target="#@tabId"
+                            type="button"
+                            role="tab">@tab.Label</button>
+                </li>
+            }
+        </ul>
+        <div class="tab-content">
+            @for (int i = 0; i < Model.Tabs.Count; i++)
+            {
+                var tab = Model.Tabs[i];
+                var tabId = $"tab-{i}";
+                <div class="tab-pane fade @(tab.IsActive ? "show active" : "")"
+                     id="@tabId"
+                     role="tabpanel"
+                     aria-labelledby="@tabId-btn">
+                    @foreach (var paragraph in tab.Content.Split('\n', StringSplitOptions.RemoveEmptyEntries))
+                    {
+                        <p>@paragraph</p>
+                    }
+                </div>
+            }
+        </div>
     </div>
 
 </div>

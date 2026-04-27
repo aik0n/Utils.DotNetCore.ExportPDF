@@ -69,9 +69,9 @@ namespace ExportPDF.WebSample.Services
                 },
                 Tabs =
                 [
-                    new TabItem { Label = "Overview",       IsActive = true,  Content = faker.Lorem.Paragraph() },
-                    new TabItem { Label = "Technical Spec", IsActive = false, Content = faker.Lorem.Paragraph() },
-                    new TabItem { Label = "Pricing",        IsActive = false, Content = faker.Lorem.Paragraph() }
+                    new TabItem { Label = "Overview",       IsActive = true,  Content = faker.Lorem.Paragraphs(3) },
+                    new TabItem { Label = "Technical Spec", IsActive = false, Content = faker.Lorem.Paragraphs(3) },
+                    new TabItem { Label = "Pricing",        IsActive = false, Content = faker.Lorem.Paragraphs(3) }
                 ]
             };
         }
