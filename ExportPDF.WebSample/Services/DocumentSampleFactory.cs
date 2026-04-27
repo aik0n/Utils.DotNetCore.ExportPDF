@@ -56,7 +56,7 @@ namespace ExportPDF.WebSample.Services
             {
                 Title = faker.Commerce.Department() + " Showcase",
                 WatermarkText = faker.PickRandom(watermarks),
-                ShowWatermark = faker.Random.Bool(),
+                ShowWatermark = true,
                 LeftColumn = new ColumnContent
                 {
                     Heading = faker.Lorem.Sentence(5),
@@ -67,12 +67,12 @@ namespace ExportPDF.WebSample.Services
                     Heading = faker.Lorem.Sentence(5),
                     Body = faker.Lorem.Paragraph()
                 },
-                Tabs =
+                ThreeColumns =
                 [
-                    new TabItem { Label = "Overview",       IsActive = true,  Content = faker.Lorem.Paragraphs(3) },
-                    new TabItem { Label = "Technical Spec", IsActive = false, Content = faker.Lorem.Paragraphs(3) },
-                    new TabItem { Label = "Pricing",        IsActive = false, Content = faker.Lorem.Paragraphs(3) }
-                ]
+                    new ColumnContent { Heading = faker.Lorem.Sentence(4), Body = faker.Lorem.Paragraph() },
+                    new ColumnContent { Heading = faker.Lorem.Sentence(4), Body = faker.Lorem.Paragraph() },
+                    new ColumnContent { Heading = faker.Lorem.Sentence(4), Body = faker.Lorem.Paragraph() }
+                ],
             };
         }
 

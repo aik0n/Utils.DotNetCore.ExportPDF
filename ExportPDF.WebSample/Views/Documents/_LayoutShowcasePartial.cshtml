@@ -19,6 +19,21 @@
         </div>
     </div>
 
+    @if (Model.ThreeColumns.Count > 0)
+    {
+        <div class="row g-3 mb-4">
+            @foreach (var col in Model.ThreeColumns)
+            {
+                <div class="col">
+                    <div class="card h-100">
+                        <div class="card-header bg-secondary text-white text-uppercase small fw-semibold" style="letter-spacing: 1px;">@col.Heading</div>
+                        <div class="card-body bg-light">@col.Body</div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+
     <div class="mb-4">
         <h5 class="mb-3">Overview</h5>
         <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>

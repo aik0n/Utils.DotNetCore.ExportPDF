@@ -8,7 +8,7 @@ namespace ExportPDF.WebSample.Models
         public string? BackgroundImageUrl { get; init; }
         public ColumnContent LeftColumn { get; init; } = new();
         public ColumnContent RightColumn { get; init; } = new();
-        public List<TabItem> Tabs { get; init; } = [];
+        public List<ColumnContent> ThreeColumns { get; init; } = [];
     }
 
     public class ColumnContent
