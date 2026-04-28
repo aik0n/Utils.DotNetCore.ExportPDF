@@ -90,7 +90,6 @@ namespace ExportPDF.WebSample.Services
                 Title = "Typography & Fonts",
                 UnicodeShowcase = "Unicode: éàü ☃ © ♥ αβγ € — ¿¡ ✓ ✗ → ← ↑ ↓ ™ ® § ¶",
                 PageSizeNote = "This document is rendered at A4 (210 × 297 mm).",
-                LongParagraph = string.Join(" ", faker.Lorem.Paragraphs(3)),
                 FontSamples =
                 [
                     new FontSample { Name = "Segoe UI (system)",          CssStack = "'Segoe UI', Arial, sans-serif",             PreviewText = faker.Lorem.Sentence(10) },

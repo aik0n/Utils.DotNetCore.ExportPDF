@@ -1,28 +1,100 @@
 @model TypographyModel
 
-<div class="page-title">@Model.Title</div>
+<style>
+    @@import url('https://fonts.googleapis.com/css2?family=Merriweather:ital,wght@@0,400;0,700;1,400&family=Source+Code+Pro&display=swap');
 
-<div class="section-heading">Font Samples</div>
+    @@font-face {
+        font-family: 'ShowcaseSerif';
+        src: local('Georgia'), local('Times New Roman');
+        font-weight: normal;
+    }
 
-@foreach (var sample in Model.FontSamples)
-{
-    <div class="font-sample">
-        <div class="font-meta">@sample.Name &mdash; <em>@sample.CssStack</em></div>
-        <div class="font-preview" style="font-family: @Html.Raw(sample.CssStack);">@sample.PreviewText</div>
-    </div>
-}
+    @@media print {
+        .screen-only { display: none !important; }
+        body { color: #000 !important; background: #fff !important; }
+        .print-highlight { background: #fffde7 !important; }
+    }
 
-<div class="section-heading">Unicode &amp; Special Characters</div>
-<div class="unicode-block">@Model.UnicodeShowcase</div>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Segoe UI', Arial, sans-serif; font-size: 15px;
+           color: #1a1a2e; background: #fff; }
 
-<div class="section-heading">Long Text &amp; Overflow</div>
-<p class="long-para">@Model.LongParagraph</p>
+    .typography-content { padding: 20px 30px; }
 
-<div class="section-heading">&#64;media print Rules</div>
-<div class="code-block">&#64;media print {
-  .screen-only { display: none !important; }
-  body { color: #000 !important; background: #fff !important; }
-  .print-highlight { background: #fffde7 !important; }
-}</div>
+    .page-title {
+        font-size: 24px; font-weight: 700; color: #4a90d9;
+        border-bottom: 3px solid #4a90d9; padding-bottom: 12px;
+        margin-bottom: 28px;
+    }
 
-<div class="page-note">@Model.PageSizeNote</div>
+    .section-heading {
+        font-size: 11px; text-transform: uppercase; letter-spacing: 1px;
+        color: #4a90d9; margin-bottom: 10px; margin-top: 24px;
+    }
+
+    .font-sample {
+        border: 1px solid #dde6f0; border-radius: 6px;
+        padding: 10px 14px; margin-bottom: 10px; background: #f7faff;
+    }
+    .font-meta { font-size: 12px; color: #888; margin-bottom: 4px; }
+    .font-preview { font-size: 17px; line-height: 1.4; }
+
+    .unicode-block {
+        font-size: 24px; letter-spacing: 3px; padding: 14px 18px;
+        background: #f0f6ff; border-radius: 6px; border-left: 4px solid #4a90d9;
+        margin-bottom: 16px;
+    }
+
+    .long-para {
+        font-size: 15px; line-height: 1.7; color: #333;
+        word-wrap: break-word; overflow-wrap: break-word;
+        text-align: justify;
+    }
+
+    .code-block {
+        font-family: 'Source Code Pro', 'Courier New', monospace;
+        font-size: 13px; background: #1a1a2e; color: #c9d1d9;
+        padding: 14px 16px; border-radius: 6px; margin-bottom: 16px;
+        white-space: pre-wrap;
+    }
+
+    .page-note {
+        margin-top: 32px; text-align: center; font-size: 13px;
+        color: #999; border-top: 1px solid #e0e0e0; padding-top: 12px;
+    }
+
+    .tok-atrule    { color: #ff79c6; }
+    .tok-selector  { color: #f1fa8c; }
+    .tok-property  { color: #8be9fd; }
+    .tok-colon     { color: #cdd6f4; }
+    .tok-value     { color: #ffb86c; }
+    .tok-hex       { color: #bd93f9; }
+    .tok-important { color: #ff5555; font-weight: 600; }
+    .tok-punct     { color: #6272a4; }
+</style>
+
+<div class="typography-content">
+    <div class="page-title">@Model.Title</div>
+
+    <div class="section-heading">Font Samples</div>
+
+    @foreach (var sample in Model.FontSamples)
+    {
+        <div class="font-sample">
+            <div class="font-meta">@sample.Name &mdash; <em>@sample.CssStack</em></div>
+            <div class="font-preview" style="font-family: @Html.Raw(sample.CssStack);">@sample.PreviewText</div>
+        </div>
+    }
+
+    <div class="section-heading">Unicode &amp; Special Characters</div>
+    <div class="unicode-block">@Model.UnicodeShowcase</div>
+
+    <div class="section-heading">&#64;media print Rules</div>
+    <div class="code-block"><span class="tok-atrule">&#64;media</span> print <span class="tok-punct">{</span>
+  <span class="tok-selector">.screen-only</span> <span class="tok-punct">{</span> <span class="tok-property">display</span><span class="tok-colon">:</span> <span class="tok-value">none</span> <span class="tok-important">!important</span><span class="tok-punct">;</span> <span class="tok-punct">}</span>
+  <span class="tok-selector">body</span> <span class="tok-punct">{</span> <span class="tok-property">color</span><span class="tok-colon">:</span> <span class="tok-hex">#000</span> <span class="tok-important">!important</span><span class="tok-punct">;</span> <span class="tok-property">background</span><span class="tok-colon">:</span> <span class="tok-hex">#fff</span> <span class="tok-important">!important</span><span class="tok-punct">;</span> <span class="tok-punct">}</span>
+  <span class="tok-selector">.print-highlight</span> <span class="tok-punct">{</span> <span class="tok-property">background</span><span class="tok-colon">:</span> <span class="tok-hex">#fffde7</span> <span class="tok-important">!important</span><span class="tok-punct">;</span> <span class="tok-punct">}</span>
+<span class="tok-punct">}</span></div>
+
+    <div class="page-note">@Model.PageSizeNote</div>
+</div>

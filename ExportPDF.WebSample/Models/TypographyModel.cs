@@ -4,7 +4,6 @@ namespace ExportPDF.WebSample.Models
     {
         public string Title { get; init; } = "Typography & Fonts";
         public string UnicodeShowcase { get; init; } = "Unicode: éàü ☃ © ♥ αβγ € — ¿¡";
-        public string LongParagraph { get; init; } = string.Empty;
         public string PageSizeNote { get; init; } = "This document is rendered at A4 (210 × 297 mm).";
         public List<FontSample> FontSamples { get; init; } = [];
     }
