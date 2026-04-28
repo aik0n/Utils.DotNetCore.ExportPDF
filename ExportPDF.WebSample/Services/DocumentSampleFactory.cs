@@ -100,40 +100,5 @@ namespace ExportPDF.WebSample.Services
                 ]
             };
         }
-
-        public PartialViewModel BuildPartialViewsSample()
-        {
-            var faker = new Faker("en");
-
-            var sectionCount = faker.Random.Number(3, 6);
-            var sections = new List<ContentSection>();
-            for (var i = 0; i < sectionCount; i++)
-            {
-                sections.Add(new ContentSection
-                {
-                    SectionTitle = faker.Lorem.Sentence(4),
-                    Body = faker.Lorem.Sentences(2),
-                    IsHighlighted = faker.Random.Bool()
-                });
-            }
-
-            return new PartialViewModel
-            {
-                Title = faker.Lorem.Sentence(4),
-                IsLandscape = faker.Random.Bool(),
-                Header = new DocumentHeader
-                {
-                    CompanyName = faker.Company.CompanyName(),
-                    DocumentTitle = faker.Lorem.Sentence(5),
-                    GeneratedAt = faker.Date.Recent(7).ToUniversalTime()
-                },
-                Footer = new DocumentFooter
-                {
-                    ConfidentialityNote = faker.Lorem.Sentence(6),
-                    PageNumber = faker.Random.Number(1, 10)
-                },
-                Sections = sections
-            };
-        }
     }
 }

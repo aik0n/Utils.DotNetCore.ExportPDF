@@ -147,36 +147,5 @@ namespace ExportPDF.WebSample.Controllers
 
             return File(bytes, "application/pdf", "Typography.pdf");
         }
-
-        [HttpGet]
-        public async Task<IActionResult> PartialViewsShow()
-        {
-            var model = _sampleFactory.BuildPartialViewsSample();
-            var cacheKey = _documentCache.CreateCacheKey();
-
-            _documentCache.Set(cacheKey, model, TimeSpan.FromMinutes(15));
-
-            ViewData["CacheKey"] = cacheKey;
-
-            return View(model);
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> PartialViewsShow([FromForm] string cacheKey)
-        {
-            var model = _documentCache.TryGetValue(cacheKey, out PartialViewModel? cachedPartial) ? cachedPartial! : _sampleFactory.BuildPartialViewsSample();
-
-            var options = new PdfOptions
-            {
-                Format = PaperFormat.A4,
-                Landscape = model.IsLandscape,
-                PrintBackground = true,
-                MarginOptions = new MarginOptions { Top = "20px", Bottom = "20px" }
-            };
-
-            var bytes = await _pdfGenerator.GenerateAsync("/Views/Documents/PartialViewsExport.cshtml", model, options);
-
-            return File(bytes, "application/pdf", "PartialViews.pdf");
-        }
     }
 }

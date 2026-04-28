@@ -7,6 +7,5 @@ namespace ExportPDF.WebSample.Services
         InvoiceModel BuildInvoiceSample(int? numberOfRows = null);
         LayoutShowcaseModel BuildLayoutShowcaseSample();
         TypographyModel BuildTypographySample();
-        PartialViewModel BuildPartialViewsSample();
     }
 }
