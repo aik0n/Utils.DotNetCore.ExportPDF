@@ -1,0 +1,143 @@
+@model InvoiceRequest
+
+@{
+    ViewData["Title"] = "Editable Invoice";
+}
+
+<form asp-controller="Documents" asp-action="EditableInvoice" method="post" id="editable-invoice-form">
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h1 class="mb-1">Editable Invoice</h1>
+            <p class="text-muted mb-0">Fill in the fields below, then export to PDF.</p>
+        </div>
+        <button type="submit" class="btn btn-success">&#x2193; Export to PDF</button>
+    </div>
+
+    <div class="row mb-4">
+        <div class="col-md-4">
+            <label class="form-label fw-semibold">Invoice Number</label>
+            <input type="text" name="InvoiceNumber" value="@Model.InvoiceNumber" class="form-control" />
+        </div>
+        <div class="col-md-4">
+            <label class="form-label fw-semibold">Issue Date</label>
+            <input type="date" name="IssueDate" value="@Model.IssueDate.ToString("yyyy-MM-dd")" class="form-control" />
+        </div>
+        <div class="col-md-4">
+            <label class="form-label fw-semibold">Due Date</label>
+            <input type="date" name="DueDate" value="@Model.DueDate.ToString("yyyy-MM-dd")" class="form-control" />
+        </div>
+    </div>
+
+    <div class="row mb-4">
+        <div class="col-md-6 d-flex">
+            <div class="card w-100">
+                <div class="card-header text-uppercase small text-muted fw-semibold">From</div>
+                <div class="card-body">
+                    <input type="text" name="BillFrom.Name" value="@Model.BillFrom.Name" class="form-control mb-2" placeholder="Company name" />
+                    <input type="text" name="BillFrom.Address" value="@Model.BillFrom.Address" class="form-control mb-2" placeholder="Address" />
+                    <input type="email" name="BillFrom.Email" value="@Model.BillFrom.Email" class="form-control" placeholder="Email" />
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6 d-flex">
+            <div class="card w-100">
+                <div class="card-header text-uppercase small text-muted fw-semibold">Bill To</div>
+                <div class="card-body">
+                    <input type="text" name="BillTo.Name" value="@Model.BillTo.Name" class="form-control mb-2" placeholder="Company name" />
+                    <input type="text" name="BillTo.Address" value="@Model.BillTo.Address" class="form-control mb-2" placeholder="Address" />
+                    <input type="email" name="BillTo.Email" value="@Model.BillTo.Email" class="form-control" placeholder="Email" />
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <table class="table table-bordered table-hover" id="items-table">
+        <thead class="table-primary">
+            <tr>
+                <th>Description</th>
+                <th class="text-end" style="width:90px">Qty</th>
+                <th class="text-end" style="width:140px">Unit Price</th>
+                <th class="text-end" style="width:140px">Total</th>
+                <th style="width:48px"></th>
+            </tr>
+        </thead>
+        <tbody id="items-body">
+            @for (int i = 0; i < Model.Items.Count; i++)
+            {
+                <tr>
+                    <td><input type="text" name="Items[@i].Description" value="@Model.Items[i].Description" class="form-control form-control-sm" /></td>
+                    <td><input type="number" name="Items[@i].Quantity" value="@Model.Items[i].Quantity" min="1" class="form-control form-control-sm text-end item-qty" /></td>
+                    <td><input type="number" name="Items[@i].UnitPrice" value="@Model.Items[i].UnitPrice" min="0" step="0.01" class="form-control form-control-sm text-end item-price" /></td>
+                    <td class="text-end align-middle item-total">$@((Model.Items[i].Quantity * Model.Items[i].UnitPrice).ToString("N2"))</td>
+                    <td class="text-center align-middle">
+                        <button type="button" class="btn btn-sm btn-outline-danger btn-remove-row">&times;</button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <button type="button" class="btn btn-outline-secondary btn-sm mb-4" id="btn-add-row">+ Add Row</button>
+
+    <div class="row mb-4">
+        <div class="col-md-3">
+            <label class="form-label fw-semibold">Tax Rate (%)</label>
+            <input type="number" name="TaxRatePercent" value="@Model.TaxRatePercent.ToString("0.##")" min="0" max="100" step="0.1" class="form-control" />
+        </div>
+    </div>
+
+    <div class="mb-4">
+        <label class="form-label fw-semibold">Notes</label>
+        <textarea name="Notes" class="form-control" rows="3">@Model.Notes</textarea>
+    </div>
+
+</form>
+
+@section Scripts {
+<script>
+(function () {
+    var tbody = document.getElementById('items-body');
+
+    function reindex() {
+        var rows = tbody.querySelectorAll('tr');
+        rows.forEach(function (tr, i) {
+            tr.querySelectorAll('input[name]').forEach(function (inp) {
+                inp.name = inp.name.replace(/Items\[\d+\]/, 'Items[' + i + ']');
+            });
+        });
+    }
+
+    function makeRow(index) {
+        return '<tr>' +
+            '<td><input type="text" name="Items[' + index + '].Description" value="" class="form-control form-control-sm" /></td>' +
+            '<td><input type="number" name="Items[' + index + '].Quantity" value="1" min="1" class="form-control form-control-sm text-end item-qty" /></td>' +
+            '<td><input type="number" name="Items[' + index + '].UnitPrice" value="0.00" min="0" step="0.01" class="form-control form-control-sm text-end item-price" /></td>' +
+            '<td class="text-end align-middle item-total">$0.00</td>' +
+            '<td class="text-center align-middle"><button type="button" class="btn btn-sm btn-outline-danger btn-remove-row">&times;</button></td>' +
+            '</tr>';
+    }
+
+    document.getElementById('btn-add-row').addEventListener('click', function () {
+        var count = tbody.querySelectorAll('tr').length;
+        tbody.insertAdjacentHTML('beforeend', makeRow(count));
+    });
+
+    tbody.addEventListener('click', function (e) {
+        if (e.target.classList.contains('btn-remove-row')) {
+            e.target.closest('tr').remove();
+            reindex();
+        }
+    });
+
+    tbody.addEventListener('input', function (e) {
+        var target = e.target;
+        if (!target.classList.contains('item-qty') && !target.classList.contains('item-price')) return;
+        var row = target.closest('tr');
+        var qty = parseFloat(row.querySelector('.item-qty').value) || 0;
+        var price = parseFloat(row.querySelector('.item-price').value) || 0;
+        row.querySelector('.item-total').textContent = '$' + (qty * price).toFixed(2);
+    });
+}());
+</script>
+}

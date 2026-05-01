@@ -119,6 +119,85 @@ namespace ExportPDF.WebSample.Controllers
         }
 
         [HttpGet]
+        public IActionResult EditableInvoice()
+        {
+            var sample = _sampleFactory.BuildInvoiceSample();
+
+            var model = new InvoiceRequest
+            {
+                InvoiceNumber = sample.InvoiceNumber,
+                IssueDate = sample.IssueDate,
+                DueDate = sample.DueDate,
+                TaxRatePercent = sample.TaxRate * 100,
+                Notes = sample.Notes,
+                BillFrom = new PartyRequest
+                {
+                    Name = sample.BillFrom.Name,
+                    Address = sample.BillFrom.Address,
+                    Email = sample.BillFrom.Email
+                },
+                BillTo = new PartyRequest
+                {
+                    Name = sample.BillTo.Name,
+                    Address = sample.BillTo.Address,
+                    Email = sample.BillTo.Email
+                },
+                Items = sample.Items.Select(i => new LineItemRequest
+                {
+                    Description = i.Description,
+                    Quantity = i.Quantity,
+                    UnitPrice = i.UnitPrice
+                }).ToList()
+            };
+
+            return View(model);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> EditableInvoice([FromForm] InvoiceRequest model)
+        {
+            model.Items ??= [];
+
+            var data = new InvoiceModel
+            {
+                InvoiceNumber = model.InvoiceNumber,
+                IssueDate = model.IssueDate,
+                DueDate = model.DueDate,
+                TaxRate = model.TaxRatePercent / 100m,
+                Notes = model.Notes,
+                BillFrom = new PartyInfo
+                {
+                    Name = model.BillFrom.Name,
+                    Address = model.BillFrom.Address,
+                    Email = model.BillFrom.Email
+                },
+                BillTo = new PartyInfo
+                {
+                    Name = model.BillTo.Name,
+                    Address = model.BillTo.Address,
+                    Email = model.BillTo.Email
+                },
+                Items = model.Items.Select(i => new LineItem
+                {
+                    Description = i.Description,
+                    Quantity = i.Quantity,
+                    UnitPrice = i.UnitPrice
+                }).ToList()
+            };
+
+            var options = new PdfOptions
+            {
+                Format = PaperFormat.A4,
+                PrintBackground = true,
+                MarginOptions = new MarginOptions { Top = "20px", Bottom = "20px" }
+            };
+
+            var bytes = await _pdfGenerator.GenerateAsync("/Views/Documents/EditableInvoiceExport.cshtml", data, options);
+
+            return File(bytes, "application/pdf", $"Invoice-{data.InvoiceNumber}.pdf");
+        }
+
+        [HttpGet]
         public async Task<IActionResult> TypographyShow()
         {
             var model = _sampleFactory.BuildTypographySample();
