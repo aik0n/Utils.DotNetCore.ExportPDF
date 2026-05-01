@@ -4,7 +4,7 @@
     ViewData["Title"] = "Editable Invoice";
 }
 
-<form asp-controller="Documents" asp-action="EditableInvoice" method="post" id="editable-invoice-form">
+<form asp-controller="Documents" asp-action="EditableInvoice" method="post" id="editable-invoice-form" novalidate>
 
     <div class="d-flex justify-content-between align-items-center mb-4">
         <div>
@@ -17,15 +17,15 @@
     <div class="row mb-4">
         <div class="col-md-4">
             <label class="form-label fw-semibold">Invoice Number</label>
-            <input type="text" name="InvoiceNumber" value="@Model.InvoiceNumber" class="form-control" />
+            <input type="text" name="InvoiceNumber" value="@Model.InvoiceNumber" class="form-control" required />
         </div>
         <div class="col-md-4">
             <label class="form-label fw-semibold">Issue Date</label>
-            <input type="date" name="IssueDate" value="@Model.IssueDate.ToString("yyyy-MM-dd")" class="form-control" />
+            <input type="date" name="IssueDate" value="@Model.IssueDate.ToString("yyyy-MM-dd")" class="form-control" required />
         </div>
         <div class="col-md-4">
             <label class="form-label fw-semibold">Due Date</label>
-            <input type="date" name="DueDate" value="@Model.DueDate.ToString("yyyy-MM-dd")" class="form-control" />
+            <input type="date" name="DueDate" value="@Model.DueDate.ToString("yyyy-MM-dd")" class="form-control" required />
         </div>
     </div>
 
@@ -34,9 +34,9 @@
             <div class="card w-100">
                 <div class="card-header text-uppercase small text-muted fw-semibold">From</div>
                 <div class="card-body">
-                    <input type="text" name="BillFrom.Name" value="@Model.BillFrom.Name" class="form-control mb-2" placeholder="Company name" />
-                    <input type="text" name="BillFrom.Address" value="@Model.BillFrom.Address" class="form-control mb-2" placeholder="Address" />
-                    <input type="email" name="BillFrom.Email" value="@Model.BillFrom.Email" class="form-control" placeholder="Email" />
+                    <input type="text" name="BillFrom.Name" value="@Model.BillFrom.Name" class="form-control mb-2" placeholder="Company name" required />
+                    <input type="text" name="BillFrom.Address" value="@Model.BillFrom.Address" class="form-control mb-2" placeholder="Address" required />
+                    <input type="email" name="BillFrom.Email" value="@Model.BillFrom.Email" class="form-control" placeholder="Email" required />
                 </div>
             </div>
         </div>
@@ -44,9 +44,9 @@
             <div class="card w-100">
                 <div class="card-header text-uppercase small text-muted fw-semibold">Bill To</div>
                 <div class="card-body">
-                    <input type="text" name="BillTo.Name" value="@Model.BillTo.Name" class="form-control mb-2" placeholder="Company name" />
-                    <input type="text" name="BillTo.Address" value="@Model.BillTo.Address" class="form-control mb-2" placeholder="Address" />
-                    <input type="email" name="BillTo.Email" value="@Model.BillTo.Email" class="form-control" placeholder="Email" />
+                    <input type="text" name="BillTo.Name" value="@Model.BillTo.Name" class="form-control mb-2" placeholder="Company name" required />
+                    <input type="text" name="BillTo.Address" value="@Model.BillTo.Address" class="form-control mb-2" placeholder="Address" required />
+                    <input type="email" name="BillTo.Email" value="@Model.BillTo.Email" class="form-control" placeholder="Email" required />
                 </div>
             </div>
         </div>
@@ -66,9 +66,9 @@
             @for (int i = 0; i < Model.Items.Count; i++)
             {
                 <tr>
-                    <td><input type="text" name="Items[@i].Description" value="@Model.Items[i].Description" class="form-control form-control-sm" /></td>
-                    <td><input type="number" name="Items[@i].Quantity" value="@Model.Items[i].Quantity" min="1" class="form-control form-control-sm text-end item-qty" /></td>
-                    <td><input type="number" name="Items[@i].UnitPrice" value="@Model.Items[i].UnitPrice" min="0" step="0.01" class="form-control form-control-sm text-end item-price" /></td>
+                    <td><input type="text" name="Items[@i].Description" value="@Model.Items[i].Description" class="form-control form-control-sm" required /></td>
+                    <td><input type="number" name="Items[@i].Quantity" value="@Model.Items[i].Quantity" min="1" class="form-control form-control-sm text-end item-qty" required /></td>
+                    <td><input type="number" name="Items[@i].UnitPrice" value="@Model.Items[i].UnitPrice" min="0" step="0.01" class="form-control form-control-sm text-end item-price" required /></td>
                     <td class="text-end align-middle item-total">$@((Model.Items[i].Quantity * Model.Items[i].UnitPrice).ToString("N2"))</td>
                     <td class="text-center align-middle">
                         <button type="button" class="btn btn-sm btn-outline-danger btn-remove-row">&times;</button>
@@ -149,9 +149,9 @@
 
     function makeRow(index) {
         return '<tr>' +
-            '<td><input type="text" name="Items[' + index + '].Description" value="" class="form-control form-control-sm" /></td>' +
-            '<td><input type="number" name="Items[' + index + '].Quantity" value="1" min="1" class="form-control form-control-sm text-end item-qty" /></td>' +
-            '<td><input type="number" name="Items[' + index + '].UnitPrice" value="0.00" min="0" step="0.01" class="form-control form-control-sm text-end item-price" /></td>' +
+            '<td><input type="text" name="Items[' + index + '].Description" value="" class="form-control form-control-sm" required /></td>' +
+            '<td><input type="number" name="Items[' + index + '].Quantity" value="1" min="1" class="form-control form-control-sm text-end item-qty" required /></td>' +
+            '<td><input type="number" name="Items[' + index + '].UnitPrice" value="0.00" min="0" step="0.01" class="form-control form-control-sm text-end item-price" required /></td>' +
             '<td class="text-end align-middle item-total">$0.00</td>' +
             '<td class="text-center align-middle"><button type="button" class="btn btn-sm btn-outline-danger btn-remove-row">&times;</button></td>' +
             '</tr>';
@@ -182,6 +182,14 @@
     });
 
     document.getElementById('tax-rate').addEventListener('input', recalcTotals);
+
+    document.getElementById('editable-invoice-form').addEventListener('submit', function (e) {
+        if (!this.checkValidity()) {
+            e.preventDefault();
+            e.stopPropagation();
+        }
+        this.classList.add('was-validated');
+    });
 }());
 </script>
 }
