@@ -80,10 +80,33 @@
 
     <button type="button" class="btn btn-outline-secondary btn-sm mb-4" id="btn-add-row">+ Add Row</button>
 
-    <div class="row mb-4">
+    <div class="row mb-4 align-items-end">
         <div class="col-md-3">
             <label class="form-label fw-semibold">Tax Rate (%)</label>
-            <input type="number" name="TaxRatePercent" value="@Model.TaxRatePercent.ToString("0.##")" min="0" max="100" step="0.1" class="form-control" />
+            <input type="number" name="TaxRatePercent" id="tax-rate" value="@Model.TaxRatePercent.ToString("0.##")" min="0" max="100" step="0.1" class="form-control" />
+        </div>
+        <div class="col-md-9 d-flex justify-content-end">
+            @{
+                var subtotal = Model.Items.Sum(i => (decimal)i.Quantity * i.UnitPrice);
+                var taxAmount = Math.Round(subtotal * Model.TaxRatePercent / 100m, 2);
+                var grandTotal = subtotal + taxAmount;
+            }
+            <table class="table table-sm mb-0" style="width: 300px;">
+                <tbody>
+                    <tr>
+                        <td class="text-muted">Subtotal</td>
+                        <td class="text-end" id="summary-subtotal">$@subtotal.ToString("N2")</td>
+                    </tr>
+                    <tr>
+                        <td class="text-muted" id="summary-tax-label">Tax (@Model.TaxRatePercent.ToString("0.##")%)</td>
+                        <td class="text-end" id="summary-tax">$@taxAmount.ToString("N2")</td>
+                    </tr>
+                    <tr class="fw-bold border-top">
+                        <td>Grand Total</td>
+                        <td class="text-end" id="summary-grand-total">$@grandTotal.ToString("N2")</td>
+                    </tr>
+                </tbody>
+            </table>
         </div>
     </div>
 
@@ -98,6 +121,22 @@
 <script>
 (function () {
     var tbody = document.getElementById('items-body');
+
+    function recalcTotals() {
+        var rows = tbody.querySelectorAll('tr');
+        var subtotal = 0;
+        rows.forEach(function (tr) {
+            subtotal += parseFloat(tr.querySelector('.item-total').textContent.replace('$', '')) || 0;
+        });
+        var taxRate = parseFloat(document.getElementById('tax-rate').value) || 0;
+        var taxAmount = Math.round(subtotal * taxRate / 100 * 100) / 100;
+        var grandTotal = subtotal + taxAmount;
+
+        document.getElementById('summary-subtotal').textContent = '$' + subtotal.toFixed(2);
+        document.getElementById('summary-tax-label').textContent = 'Tax (' + (taxRate % 1 === 0 ? taxRate.toFixed(0) : taxRate) + '%)';
+        document.getElementById('summary-tax').textContent = '$' + taxAmount.toFixed(2);
+        document.getElementById('summary-grand-total').textContent = '$' + grandTotal.toFixed(2);
+    }
 
     function reindex() {
         var rows = tbody.querySelectorAll('tr');
@@ -121,12 +160,14 @@
     document.getElementById('btn-add-row').addEventListener('click', function () {
         var count = tbody.querySelectorAll('tr').length;
         tbody.insertAdjacentHTML('beforeend', makeRow(count));
+        recalcTotals();
     });
 
     tbody.addEventListener('click', function (e) {
         if (e.target.classList.contains('btn-remove-row')) {
             e.target.closest('tr').remove();
             reindex();
+            recalcTotals();
         }
     });
 
@@ -137,7 +178,10 @@
         var qty = parseFloat(row.querySelector('.item-qty').value) || 0;
         var price = parseFloat(row.querySelector('.item-price').value) || 0;
         row.querySelector('.item-total').textContent = '$' + (qty * price).toFixed(2);
+        recalcTotals();
     });
+
+    document.getElementById('tax-rate').addEventListener('input', recalcTotals);
 }());
 </script>
 }
