@@ -1,0 +1,188 @@
+@model ExportPDF.ConsoleSample.Models.PurchaseOrderModel
+
+@{
+    Layout = null;
+}
+
+<!DOCTYPE HTML>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <title>Purchase Order @Model.PurchaseOrderNumber</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: Arial, sans-serif; font-size: 11pt; color: #222; padding: 20px; }
+
+        h1 { font-size: 20pt; color: #1a3a5c; margin-bottom: 4px; }
+        h2 { font-size: 11pt; color: #1a3a5c; margin-bottom: 6px; border-bottom: 1px solid #ccc; padding-bottom: 3px; }
+
+        .clearfix::after { content: ""; display: block; clear: both; }
+
+        /* Header */
+        .header { margin-bottom: 16px; }
+        .header-title { font-size: 22pt; font-weight: bold; color: #1a3a5c; }
+        .header-subtitle { font-size: 10pt; color: #666; }
+
+        /* Two-column vendor / ship-to */
+        .parties { margin-bottom: 14px; }
+        .party-col { float: left; width: 48%; }
+        .party-col + .party-col { margin-left: 4%; }
+        .party-col p { margin: 2px 0; font-size: 10pt; }
+        .party-col strong { font-size: 10pt; }
+
+        /* PO metadata row — four equal blocks */
+        .meta-row { margin-bottom: 16px; border: 1px solid #d0d0d0; background-color: #f5f7fa; }
+        .meta-cell { float: left; width: 25%; padding: 8px 10px; border-right: 1px solid #d0d0d0; }
+        .meta-cell:last-child { border-right: none; }
+        .meta-label { font-size: 8pt; color: #888; text-transform: uppercase; margin-bottom: 2px; }
+        .meta-value { font-size: 10pt; font-weight: bold; color: #222; }
+
+        /* Line items table */
+        table { width: 100%; border-collapse: collapse; margin-bottom: 12px; }
+        th { background-color: #1a3a5c; color: #fff; text-align: left; padding: 6px 8px; font-size: 9.5pt; }
+        td { padding: 5px 8px; font-size: 10pt; border-bottom: 1px solid #e0e0e0; }
+        tr.alt td { background-color: #f9f9f9; }
+        td.num { text-align: right; }
+        th.num { text-align: right; }
+
+        /* Totals */
+        .totals-wrapper { float: right; width: 260px; margin-bottom: 16px; }
+        .totals-table { width: 100%; border-collapse: collapse; border: 1px solid #d0d0d0; }
+        .totals-table td { padding: 5px 10px; font-size: 10pt; }
+        .totals-table td:last-child { text-align: right; font-weight: bold; }
+        .totals-table tr.grand td { background-color: #1a3a5c; color: #fff; font-size: 11pt; }
+
+        /* Notes / footer */
+        .notes { clear: both; padding-top: 8px; font-size: 9.5pt; color: #444; }
+        .notes strong { color: #222; }
+
+        .footer {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            text-align: center;
+            font-size: 8pt;
+            color: #aaa;
+            padding: 6px 20px;
+            border-top: 1px solid #e0e0e0;
+            background-color: #fff;
+        }
+
+        @@media print {
+            body { padding: 0; }
+            .footer { position: fixed; bottom: 0; }
+        }
+
+        @@page { size: A4; margin: 15mm; }
+    </style>
+</head>
+<body>
+
+    <!-- Header -->
+    <div class="header">
+        <div class="header-title">PURCHASE ORDER</div>
+        <div class="header-subtitle">@Model.PurchaseOrderNumber</div>
+    </div>
+
+    <!-- PO Metadata row -->
+    <div class="meta-row clearfix">
+        <div class="meta-cell">
+            <div class="meta-label">PO Number</div>
+            <div class="meta-value">@Model.PurchaseOrderNumber</div>
+        </div>
+        <div class="meta-cell">
+            <div class="meta-label">Order Date</div>
+            <div class="meta-value">@Model.OrderDate.ToString("MMM dd, yyyy")</div>
+        </div>
+        <div class="meta-cell">
+            <div class="meta-label">Required By</div>
+            <div class="meta-value">@Model.RequiredDate.ToString("MMM dd, yyyy")</div>
+        </div>
+        <div class="meta-cell">
+            <div class="meta-label">Payment / Shipping</div>
+            <div class="meta-value">@Model.PaymentTerms &nbsp;|&nbsp; @Model.ShippingMethod</div>
+        </div>
+    </div>
+
+    <!-- Vendor / Ship-To -->
+    <div class="parties clearfix">
+        <div class="party-col">
+            <h2>Vendor</h2>
+            <p><strong>@Model.Vendor.Name</strong></p>
+            <p>@Model.Vendor.Address</p>
+            <p>@Model.Vendor.City</p>
+            <p>@Model.Vendor.Phone</p>
+            <p>@Model.Vendor.Email</p>
+            <p>Attn: @Model.Vendor.ContactPerson</p>
+        </div>
+        <div class="party-col">
+            <h2>Ship To</h2>
+            <p><strong>@Model.ShipTo.CompanyName</strong></p>
+            <p>@Model.ShipTo.Address</p>
+            <p>@Model.ShipTo.City</p>
+            <p>@Model.ShipTo.Phone</p>
+            <p>Attn: @Model.ShipTo.ContactPerson</p>
+        </div>
+    </div>
+
+    <!-- Line Items -->
+    <h2>Line Items</h2>
+    <table>
+        <thead>
+            <tr>
+                <th style="width:90px;">Item Code</th>
+                <th>Description</th>
+                <th style="width:45px;" class="num">Qty</th>
+                <th style="width:50px;">Unit</th>
+                <th style="width:80px;" class="num">Unit Price</th>
+                <th style="width:90px;" class="num">Total</th>
+            </tr>
+        </thead>
+        <tbody>
+            @for (int i = 0; i < Model.Items.Count; i++)
+            {
+                var item = Model.Items[i];
+                var rowClass = i % 2 == 1 ? "alt" : "";
+                <tr class="@rowClass">
+                    <td>@item.ItemCode</td>
+                    <td>@item.Description</td>
+                    <td class="num">@item.Quantity</td>
+                    <td>@item.Unit</td>
+                    <td class="num">$@item.UnitPrice.ToString("N2")</td>
+                    <td class="num">$@item.Total.ToString("N2")</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <!-- Totals -->
+    <div class="totals-wrapper">
+        <table class="totals-table">
+            <tr>
+                <td>Subtotal</td>
+                <td>$@Model.Subtotal.ToString("N2")</td>
+            </tr>
+            <tr>
+                <td>Tax (@((Model.TaxRate * 100).ToString("0"))%)</td>
+                <td>$@Model.TaxAmount.ToString("N2")</td>
+            </tr>
+            <tr class="grand">
+                <td>Grand Total</td>
+                <td>$@Model.GrandTotal.ToString("N2")</td>
+            </tr>
+        </table>
+    </div>
+
+    <!-- Notes -->
+    <div class="notes clearfix">
+        <strong>Notes:</strong> @Model.Notes
+    </div>
+
+    <!-- Footer -->
+    <div class="footer">
+        This purchase order is subject to the terms and conditions agreed upon between the parties.
+    </div>
+
+</body>
+</html>

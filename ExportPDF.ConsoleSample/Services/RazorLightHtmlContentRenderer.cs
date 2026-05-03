@@ -1,7 +1,7 @@
 using RazorLight;
 using Utils.DotNetCore.ExportPDF;
 
-namespace ExportPDF.ConsoleSample.Renderers
+namespace ExportPDF.ConsoleSample.Services
 {
     public sealed class RazorLightHtmlContentRenderer : IHtmlContentRenderer
     {

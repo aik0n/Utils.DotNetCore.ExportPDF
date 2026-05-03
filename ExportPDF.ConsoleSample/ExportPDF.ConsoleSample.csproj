@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
@@ -9,6 +9,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Bogus" Version="35.*" />
     <PackageReference Include="RazorLight" Version="2.*" />
   </ItemGroup>
 
@@ -17,7 +18,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Content Include="Templates\Greeting.cshtml">
+<Content Include="Templates\PurchaseOrderExport.cshtml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
