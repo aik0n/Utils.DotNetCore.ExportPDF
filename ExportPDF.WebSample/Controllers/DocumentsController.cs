@@ -119,7 +119,7 @@ namespace ExportPDF.WebSample.Controllers
         }
 
         [HttpGet]
-        public IActionResult EditableInvoice()
+        public async Task<IActionResult> EditableInvoice()
         {
             var sample = _sampleFactory.BuildInvoiceSample();
 
@@ -225,6 +225,36 @@ namespace ExportPDF.WebSample.Controllers
             var bytes = await _pdfGenerator.GenerateAsync("/Views/Documents/TypographyExport.cshtml", model, options);
 
             return File(bytes, "application/pdf", "Typography.pdf");
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> ImageShowcase()
+        {
+            var model = _sampleFactory.BuildImageShowcaseSample();
+            var cacheKey = _documentCache.CreateCacheKey();
+
+            _documentCache.Set(cacheKey, model, TimeSpan.FromMinutes(15));
+
+            ViewData["CacheKey"] = cacheKey;
+
+            return View(model);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ImageShowcase([FromForm] string cacheKey)
+        {
+            var options = new PdfOptions
+            {
+                Format = PaperFormat.A4,
+                PrintBackground = true,
+                MarginOptions = new MarginOptions { Top = "20px", Bottom = "20px" }
+            };
+
+            var model = _documentCache.TryGetValue(cacheKey, out ImageShowcaseModel? cached) ? cached! : _sampleFactory.BuildImageShowcaseSample();
+
+            var bytes = await _pdfGenerator.GenerateAsync("/Views/Documents/ImageShowcaseExport.cshtml", model, options);
+
+            return File(bytes, "application/pdf", "ImageShowcase.pdf");
         }
     }
 }

@@ -1,10 +1,18 @@
 using Bogus;
 using ExportPDF.WebSample.Models;
+using Microsoft.AspNetCore.Hosting;
 
 namespace ExportPDF.WebSample.Services
 {
     public class DocumentSampleFactory : IDocumentSampleFactory
     {
+        private readonly IWebHostEnvironment _env;
+
+        public DocumentSampleFactory(IWebHostEnvironment env)
+        {
+            _env = env ?? throw new ArgumentNullException(nameof(env));
+        }
+
         public InvoiceModel BuildInvoiceSample(int? numberOfRows = null)
         {
             var faker = new Faker("en");
@@ -97,6 +105,34 @@ namespace ExportPDF.WebSample.Services
                     new FontSample { Name = "Merriweather (Google)",       CssStack = "'Merriweather', Georgia, serif",             PreviewText = faker.Lorem.Sentence(10) },
                     new FontSample { Name = "Courier New (monospace)",     CssStack = "'Courier New', 'Lucida Console', monospace", PreviewText = faker.Lorem.Sentence(10) },
                     new FontSample { Name = "ShowcaseSerif (@font-face)",  CssStack = "'ShowcaseSerif', Georgia, serif",            PreviewText = faker.Lorem.Sentence(10) }
+                ]
+            };
+        }
+
+        public ImageShowcaseModel BuildImageShowcaseSample()
+        {
+            var imagePath = System.IO.Path.Combine(_env.WebRootPath, "images", "robo_avatar_02_128_128.png");
+
+            var imageBytes = System.IO.File.ReadAllBytes(imagePath);
+            var imageBase64 = Convert.ToBase64String(imageBytes);
+
+            return new ImageShowcaseModel
+            {
+                ImageBase64 = imageBase64,
+                ImageMimeType = "image/png",
+                Title = "Image Embedding in PDFs",
+                Caption = "Robo Avatar — embedded as a base64 data URI",
+                Description = "This showcase demonstrates that Chromium (via PuppeteerSharp) correctly renders " +
+                              "images supplied as inline base64 data URIs. No external HTTP requests are needed: " +
+                              "the image bytes are read from disk at generation time, encoded to Base64, and " +
+                              "injected directly into the HTML as a data: src attribute.",
+                FeatureHighlights =
+                [
+                    "Images load even when the server has no public URL",
+                    "Works identically in preview (IWebHostEnvironment path) and export (Puppeteer headless)",
+                    "PNG, JPEG, GIF, and SVG are all supported via their respective MIME types",
+                    "Encoding is performed once per request and stored on the model",
+                    "No <img src='/...' /> path resolution issues in Puppeteer's virtual context"
                 ]
             };
         }

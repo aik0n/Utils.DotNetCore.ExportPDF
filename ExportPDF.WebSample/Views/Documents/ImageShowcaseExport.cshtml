@@ -1,0 +1,20 @@
+@model ExportPDF.WebSample.Models.ImageShowcaseModel
+@inject Microsoft.AspNetCore.Hosting.IWebHostEnvironment Env
+
+@{
+    Layout = null;
+    var bootstrapPath = System.IO.Path.Combine(Env.WebRootPath, "lib", "bootstrap", "dist", "css", "bootstrap.min.css");
+    var bootstrapCss = await System.IO.File.ReadAllTextAsync(bootstrapPath);
+}
+
+<!DOCTYPE HTML>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=794, initial-scale=1.0" />
+    <style>@Html.Raw(bootstrapCss)</style>
+</head>
+<body class="p-4 bg-white">
+    @await Html.PartialAsync("_ImageShowcasePartial", Model)
+</body>
+</html>
