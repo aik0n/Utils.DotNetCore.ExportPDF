@@ -40,13 +40,27 @@
         padding: 28px;
     }
 
-    .img-showcase-image-block {
-        text-align: center;
+    .img-showcase-image-row {
+        display: flex;
+        justify-content: center;
+        gap: 40px;
         margin-bottom: 24px;
     }
 
-    .img-showcase-image-block img {
+    .img-showcase-image-block {
+        text-align: center;
+    }
+
+    .img-round {
         border-radius: 50%;
+        border: 4px solid var(--brand);
+        box-shadow: 0 4px 16px rgba(16, 185, 129, 0.25);
+        width: 128px;
+        height: 128px;
+    }
+
+    .img-square {
+        border-radius: 8px;
         border: 4px solid var(--brand);
         box-shadow: 0 4px 16px rgba(16, 185, 129, 0.25);
         width: 128px;
@@ -100,11 +114,19 @@
     </div>
     <div class="img-showcase-body">
 
-        <div class="img-showcase-image-block">
-            <img src="data:@Model.ImageMimeType;base64,@Model.ImageBase64"
-                 alt="@Model.Caption"
-                 width="128" height="128" />
-            <div class="img-showcase-caption">@Model.Caption</div>
+        <div class="img-showcase-image-row">
+            <div class="img-showcase-image-block">
+                <img src="data:@Model.ImageMimeType;base64,@Model.ImageBase64"
+                     alt="@Model.Caption"
+                     width="128" height="128" class="img-round" />
+                <div class="img-showcase-caption">@Model.Caption</div>
+            </div>
+            <div class="img-showcase-image-block">
+                <img src="data:@Model.QrCodeMimeType;base64,@Model.QrCodeBase64"
+                     alt="@Model.QrCodeCaption"
+                     width="128" height="128" class="img-square" />
+                <div class="img-showcase-caption">@Model.QrCodeCaption</div>
+            </div>
         </div>
 
         <div class="img-showcase-description">

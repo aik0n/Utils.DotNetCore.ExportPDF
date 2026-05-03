@@ -111,29 +111,37 @@ namespace ExportPDF.WebSample.Services
 
         public ImageShowcaseModel BuildImageShowcaseSample()
         {
-            var imagePath = System.IO.Path.Combine(_env.WebRootPath, "images", "robo_avatar_02_128_128.png");
-
-            var imageBytes = System.IO.File.ReadAllBytes(imagePath);
+            var imagePath = Path.Combine(_env.WebRootPath, "images", "brand_logo_acme.png");
+            var imageBytes = File.ReadAllBytes(imagePath);
             var imageBase64 = Convert.ToBase64String(imageBytes);
+
+            var qrPath = Path.Combine(_env.WebRootPath, "images", "github_qr_url.png");
+            var qrBytes = File.ReadAllBytes(qrPath);
+            var qrBase64 = Convert.ToBase64String(qrBytes);
 
             return new ImageShowcaseModel
             {
                 ImageBase64 = imageBase64,
                 ImageMimeType = "image/png",
                 Title = "Image Embedding in PDFs",
-                Caption = "Robo Avatar — embedded as a base64 data URI",
+                Caption = "Acme Brand Logo — embedded as a base64 data URI",
                 Description = "This showcase demonstrates that Chromium (via PuppeteerSharp) correctly renders " +
-                              "images supplied as inline base64 data URIs. No external HTTP requests are needed: " +
-                              "the image bytes are read from disk at generation time, encoded to Base64, and " +
-                              "injected directly into the HTML as a data: src attribute.",
+                              "multiple images supplied as inline base64 data URIs. No external HTTP requests are needed: " +
+                              "each image's bytes are read from disk at generation time, encoded to Base64, and " +
+                              "injected directly into the HTML as a data: src attribute. Both the brand logo and the " +
+                              "GitHub repository QR code are embedded this way.",
                 FeatureHighlights =
                 [
                     "Images load even when the server has no public URL",
                     "Works identically in preview (IWebHostEnvironment path) and export (Puppeteer headless)",
                     "PNG, JPEG, GIF, and SVG are all supported via their respective MIME types",
                     "Encoding is performed once per request and stored on the model",
-                    "No <img src='/...' /> path resolution issues in Puppeteer's virtual context"
-                ]
+                    "No <img src='/...' /> path resolution issues in Puppeteer's virtual context",
+                    "Multiple images can be embedded in the same document"
+                ],
+                QrCodeBase64 = qrBase64,
+                QrCodeMimeType = "image/png",
+                QrCodeCaption = "GitHub repo — scan to open"
             };
         }
     }
