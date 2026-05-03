@@ -2,6 +2,7 @@
   <Folder Name="/Solution Items/">
     <File Path=".editorconfig" />
   </Folder>
+  <Project Path="ExportPDF.ConsoleSample/ExportPDF.ConsoleSample.csproj" />
   <Project Path="ExportPDF.WebSample/ExportPDF.WebSample.csproj" />
   <Project Path="Utils.DotNetCore.ExportPDF.Tests/Utils.DotNetCore.ExportPDF.Tests.csproj" />
   <Project Path="Utils.DotNetCore.ExportPDF/Utils.DotNetCore.ExportPDF.csproj" />

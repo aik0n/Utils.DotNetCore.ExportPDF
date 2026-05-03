@@ -1,0 +1,21 @@
+@model ExportPDF.ConsoleSample.Models.GreetingModel
+@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <title>Greeting</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 40px; color: #333; }
+        h1 { color: #2c5282; }
+        .meta { font-size: 0.85em; color: #666; margin-top: 32px; }
+    </style>
+</head>
+<body>
+    <h1>Hello, @Model.RecipientName!</h1>
+    <p>Prepared by <strong>@Model.SenderName</strong>.</p>
+    <p class="meta">Generated at @Model.GeneratedAt.ToString("yyyy-MM-dd HH:mm:ss") UTC</p>
+</body>
+</html>
