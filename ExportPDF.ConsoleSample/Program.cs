@@ -1,7 +1,8 @@
+using ExportPDF.ConsoleSample.Models;
 using ExportPDF.ConsoleSample.Services;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using Microsoft.Playwright;
+using PdfSharpCore;
 using RazorLight;
 using Utils.DotNetCore.ExportPDF;
 
@@ -20,7 +21,7 @@ namespace ExportPDF.ConsoleSample
                         .Build())
                 .AddPdfGenerator()
                 .WithCustomContentRenderer<RazorLightHtmlContentRenderer>()
-                .WithPlaywrightExporter()
+                .WithCustomExporter<PdfSharpHtmlPdfExporter>()
                 .BuildServiceProvider();
 
             using var scope = serviceProvider.CreateScope();
@@ -28,17 +29,12 @@ namespace ExportPDF.ConsoleSample
 
             var model = PurchaseOrderFactory.Build();
 
-            var options = new PagePdfOptions
+            var options = new PdfSharpExportOptions
             {
-                Format = "A4",
-                PrintBackground = true,
-                Margin = new Margin
-                {
-                    Top = "15mm",
-                    Bottom = "15mm",
-                    Left = "15mm",
-                    Right = "15mm"
-                }
+                PageSize        = PageSize.A4,
+                PageOrientation = PageOrientation.Portrait,
+                MarginPt        = 42,
+                Author          = "Little Brave Developer",
             };
 
             var bytes = await pdfGenerator.GenerateAsync("Templates/PurchaseOrderExport.cshtml", model, options);

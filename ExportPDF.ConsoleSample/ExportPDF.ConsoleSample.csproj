@@ -10,6 +10,7 @@
 
   <ItemGroup>
     <PackageReference Include="Bogus" Version="35.*" />
+    <PackageReference Include="Polybioz.HtmlRenderer.PdfSharp.Core" Version="1.1.0" />
     <PackageReference Include="RazorLight" Version="2.*" />
   </ItemGroup>
 
